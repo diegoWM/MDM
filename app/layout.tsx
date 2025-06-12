@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'WeedMe MDM - Master Data Management',
-  description: 'Professional master data management system',
+  description: 'Professional master data management system with governance-first approach',
 }
 
 export default function RootLayout({

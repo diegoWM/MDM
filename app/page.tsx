@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Filter, Download, RefreshCw } from 'lucide-react'
+import { Search, Filter, Download, RefreshCw, Building2, TrendingUp, MapPin, Users } from 'lucide-react'
 
-// Simple partnership data
+// Partnership data matching your BigQuery schema
 const partnerships = [
   {
     id: 'LL',
@@ -11,7 +11,9 @@ const partnerships = [
     status: 'Active',
     region: 'AB',
     contact: 'contact@leaflife.ca',
-    tier: 'Premium'
+    tier: 'Premium',
+    internal_contact: 'Marina, Rori',
+    source_type: 'Portal'
   },
   {
     id: 'PL',
@@ -19,7 +21,9 @@ const partnerships = [
     status: 'Active',
     region: 'AB',
     contact: 'dylan.bruck@plantlifecanada.com',
-    tier: 'Standard'
+    tier: 'Standard',
+    internal_contact: 'Marina, Rori',
+    source_type: 'Email'
   },
   {
     id: 'LUX',
@@ -27,7 +31,9 @@ const partnerships = [
     status: 'Active',
     region: 'AB,MB',
     contact: 'jselleck@420corp.ca',
-    tier: 'Premium'
+    tier: 'Premium',
+    internal_contact: 'Marina, Rori',
+    source_type: 'Email'
   },
   {
     id: 'F20',
@@ -35,7 +41,9 @@ const partnerships = [
     status: 'Active',
     region: 'AB,ON',
     contact: 'lauramurray@oneplant.ca',
-    tier: 'Standard'
+    tier: 'Standard',
+    internal_contact: 'Rori',
+    source_type: 'Email'
   },
   {
     id: 'TRN',
@@ -43,7 +51,9 @@ const partnerships = [
     status: 'Inactive',
     region: 'ON',
     contact: null,
-    tier: null
+    tier: null,
+    internal_contact: null,
+    source_type: null
   },
   {
     id: 'GRN',
@@ -51,7 +61,9 @@ const partnerships = [
     status: 'Active',
     region: 'BC',
     contact: 'info@greenvalley.ca',
-    tier: 'Premium'
+    tier: 'Premium',
+    internal_contact: 'Diego, Marina',
+    source_type: 'Portal'
   }
 ]
 
@@ -61,7 +73,8 @@ export default function Home() {
 
   const filteredPartnerships = partnerships.filter(partnership => {
     const matchesSearch = partnership.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         partnership.id.toLowerCase().includes(searchTerm.toLowerCase())
+                         partnership.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         partnership.region.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || partnership.status.toLowerCase() === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -71,22 +84,22 @@ export default function Home() {
   const regionsCount = new Set(partnerships.flatMap(p => p.region.split(','))).size
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-6 py-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Partnership Master Data</h1>
-            <p className="text-sm text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900">Partnership Master Data</h1>
+            <p className="text-gray-600 mt-2">
               Manage and view partnership information from your master data source
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
               <Download className="w-4 h-4 mr-2" />
               Export
             </button>
-            <button className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
             </button>
@@ -95,76 +108,80 @@ export default function Home() {
       </header>
 
       {/* Content */}
-      <div className="flex-1 p-6 overflow-auto">
+      <div className="flex-1 p-6 lg:p-8 overflow-auto">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 font-bold text-lg">✓</span>
+                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                  <Building2 className="w-6 h-6 text-green-600" />
                 </div>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Active Partnerships</p>
                 <p className="text-2xl font-bold text-gray-900">{activeCount}</p>
+                <p className="text-xs text-green-600 font-medium">+12% vs last month</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600 font-bold text-lg">#</span>
+                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Total Partnerships</p>
                 <p className="text-2xl font-bold text-gray-900">{partnerships.length}</p>
+                <p className="text-xs text-gray-500">All partnerships</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-yellow-600 font-bold text-lg">★</span>
+                <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Premium Partners</p>
                 <p className="text-2xl font-bold text-gray-900">{premiumCount}</p>
+                <p className="text-xs text-yellow-600 font-medium">High value tier</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-purple-600 font-bold text-lg">📍</span>
+                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                  <MapPin className="w-6 h-6 text-purple-600" />
                 </div>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Regions Covered</p>
                 <p className="text-2xl font-bold text-gray-900">{regionsCount}</p>
+                <p className="text-xs text-purple-600 font-medium">Canadian provinces</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Main Data Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           {/* Filters */}
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-6 border-b border-gray-200 bg-gray-50/50">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white shadow-sm"
                   placeholder="Search partnerships, IDs, or regions..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -172,7 +189,7 @@ export default function Home() {
               </div>
               <div className="flex gap-3">
                 <select
-                  className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white min-w-[150px]"
+                  className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white min-w-[150px] shadow-sm"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -180,7 +197,7 @@ export default function Home() {
                   <option value="active">Active Only</option>
                   <option value="inactive">Inactive Only</option>
                 </select>
-                <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                <button className="inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
                   <Filter className="w-4 h-4 mr-2" />
                   More Filters
                 </button>
@@ -189,9 +206,20 @@ export default function Home() {
             
             <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
               <span>
-                Showing <span className="font-medium text-gray-900">{filteredPartnerships.length}</span> of{' '}
-                <span className="font-medium text-gray-900">{partnerships.length}</span> partnerships
+                Showing <span className="font-semibold text-gray-900">{filteredPartnerships.length}</span> of{' '}
+                <span className="font-semibold text-gray-900">{partnerships.length}</span> partnerships
               </span>
+              {(searchTerm || statusFilter !== 'all') && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('')
+                    setStatusFilter('all')
+                  }}
+                  className="text-green-600 hover:text-green-700 font-medium"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
           </div>
 
@@ -216,7 +244,10 @@ export default function Home() {
                     Regions
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Contact
+                    External Contact
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Internal Team
                   </th>
                 </tr>
               </thead>
@@ -224,22 +255,25 @@ export default function Home() {
                 {filteredPartnerships.map((partnership) => (
                   <tr key={partnership.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-mono font-bold text-green-600 bg-green-50 px-2 py-1 rounded">
+                      <span className="text-sm font-mono font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-md border border-green-200">
                         {partnership.id}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-gray-900">
-                        {partnership.name}
+                      <div className="flex items-center">
+                        <Building2 className="w-4 h-4 text-gray-400 mr-3" />
+                        <div className="text-sm font-semibold text-gray-900">
+                          {partnership.name}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
+                      <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold border ${
                         partnership.status === 'Active' 
-                          ? 'bg-green-100 text-green-800 border border-green-200' 
-                          : 'bg-gray-100 text-gray-800 border border-gray-200'
+                          ? 'bg-green-50 text-green-700 border-green-200' 
+                          : 'bg-gray-50 text-gray-700 border-gray-200'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                        <span className={`w-2 h-2 rounded-full mr-2 ${
                           partnership.status === 'Active' ? 'bg-green-500' : 'bg-gray-400'
                         }`}></span>
                         {partnership.status}
@@ -247,10 +281,10 @@ export default function Home() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {partnership.tier ? (
-                        <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        <span className={`inline-flex px-3 py-1.5 rounded-full text-xs font-semibold border ${
                           partnership.tier === 'Premium'
-                            ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                            : 'bg-blue-100 text-blue-800 border border-blue-200'
+                            ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                            : 'bg-blue-50 text-blue-700 border-blue-200'
                         }`}>
                           {partnership.tier}
                         </span>
@@ -263,9 +297,10 @@ export default function Home() {
                         {partnership.region.split(',').map((region, index) => (
                           <span 
                             key={index}
-                            className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded border border-blue-200"
+                            className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-md border border-blue-200"
                           >
-                            📍 {region.trim()}
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {region.trim()}
                           </span>
                         ))}
                       </div>
@@ -282,6 +317,16 @@ export default function Home() {
                         <span className="text-sm text-gray-400">No contact</span>
                       )}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {partnership.internal_contact ? (
+                        <div className="flex items-center">
+                          <Users className="w-4 h-4 text-gray-400 mr-2" />
+                          <span className="text-sm text-gray-700">{partnership.internal_contact}</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">-</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -290,9 +335,18 @@ export default function Home() {
           
           {filteredPartnerships.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-gray-400 text-4xl mb-4">🔍</div>
+              <div className="text-gray-400 text-6xl mb-4">🔍</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No partnerships found</h3>
-              <p className="text-gray-500">Try adjusting your search terms or filters.</p>
+              <p className="text-gray-500 mb-4">Try adjusting your search terms or filters.</p>
+              <button
+                onClick={() => {
+                  setSearchTerm('')
+                  setStatusFilter('all')
+                }}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200"
+              >
+                Clear all filters
+              </button>
             </div>
           )}
         </div>
