@@ -1,13 +1,8 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
-import { Navigation } from '@/components/Navigation'
 
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Weed Me - MDM | Master Data Management',
-  description: 'Professional master data management system with governance-first approach',
+export const metadata = {
+  title: 'Weed Me - MDM',
+  description: 'Master Data Management System',
 }
 
 export default function RootLayout({
@@ -17,13 +12,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="flex h-screen bg-gray-100">
-          <Navigation />
-          <main className="flex-1 overflow-auto">
-            {children}
-          </main>
-        </div>
+      <body className="bg-gray-50">
+        {children}
       </body>
     </html>
   )
