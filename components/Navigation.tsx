@@ -176,7 +176,7 @@ export function Navigation() {
             flex items-center px-3 py-2.5 text-sm cursor-pointer transition-all duration-200 group
             ${level === 0 ? 'mx-2 rounded-lg' : 'ml-6 mr-2 rounded-md'}
             ${isActive 
-              ? 'bg-green-50 text-green-800 font-medium border-l-4 border-green-500' 
+              ? 'bg-blue-50 text-blue-800 font-medium border-l-4 border-blue-500' 
               : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
             }
             ${level > 0 ? 'border-l-2 border-gray-100 ml-8 hover:border-gray-200' : ''}
@@ -185,7 +185,7 @@ export function Navigation() {
         >
           <item.icon className={`
             ${isCollapsed ? 'w-5 h-5' : 'w-4 h-4'} 
-            ${isActive ? 'text-green-600' : 'text-gray-500 group-hover:text-gray-700'}
+            ${isActive ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'}
             flex-shrink-0 transition-colors
           `} />
           
@@ -256,7 +256,7 @@ export function Navigation() {
           <div className="flex items-center justify-between">
             {!isCollapsed && (
               <div>
-                <h1 className="text-lg font-bold text-gray-900">WeedMe MDM</h1>
+                <h1 className="text-lg font-bold text-gray-900">Weed Me - MDM</h1>
                 <p className="text-xs text-gray-500 mt-0.5">Master Data Management</p>
               </div>
             )}
@@ -285,7 +285,7 @@ export function Navigation() {
         {/* Quick Actions */}
         {!isCollapsed && (
           <div className="p-4 border-b border-gray-200">
-            <button className="w-full flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+            <button className="w-full flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
               <Plus className="w-4 h-4 mr-2" />
               Add New Data
             </button>
@@ -303,7 +303,7 @@ export function Navigation() {
         <div className="border-t border-gray-200 p-4">
           {!isCollapsed ? (
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -317,7 +317,7 @@ export function Navigation() {
             </div>
           ) : (
             <div className="flex justify-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
                 <User className="w-5 h-5 text-white" />
               </div>
             </div>

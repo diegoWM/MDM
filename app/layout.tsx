@@ -6,7 +6,7 @@ import { Navigation } from '@/components/Navigation'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'WeedMe MDM - Master Data Management',
+  title: 'Weed Me - MDM | Master Data Management',
   description: 'Professional master data management system with governance-first approach',
 }
 
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex h-screen bg-gray-50">
+        <div className="flex h-screen bg-gray-100">
           <Navigation />
           <main className="flex-1 overflow-auto">
             {children}

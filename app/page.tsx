@@ -84,7 +84,7 @@ export default function Home() {
   const regionsCount = new Set(partnerships.flatMap(p => p.region.split(','))).size
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col bg-gray-100">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
@@ -95,11 +95,11 @@ export default function Home() {
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
               <Download className="w-4 h-4 mr-2" />
               Export
             </button>
-            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
             </button>
@@ -114,14 +114,14 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <Building2 className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Active Partnerships</p>
                 <p className="text-2xl font-bold text-gray-900">{activeCount}</p>
-                <p className="text-xs text-green-600 font-medium">+12% vs last month</p>
+                <p className="text-xs text-blue-600 font-medium">+12% vs last month</p>
               </div>
             </div>
           </div>
@@ -129,8 +129,8 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-gray-600" />
                 </div>
               </div>
               <div className="ml-4">
@@ -181,7 +181,7 @@ export default function Home() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white shadow-sm"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white shadow-sm"
                   placeholder="Search partnerships, IDs, or regions..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -189,7 +189,7 @@ export default function Home() {
               </div>
               <div className="flex gap-3">
                 <select
-                  className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white min-w-[150px] shadow-sm"
+                  className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white min-w-[150px] shadow-sm"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -197,7 +197,7 @@ export default function Home() {
                   <option value="active">Active Only</option>
                   <option value="inactive">Inactive Only</option>
                 </select>
-                <button className="inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+                <button className="inline-flex items-center px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
                   <Filter className="w-4 h-4 mr-2" />
                   More Filters
                 </button>
@@ -215,7 +215,7 @@ export default function Home() {
                     setSearchTerm('')
                     setStatusFilter('all')
                   }}
-                  className="text-green-600 hover:text-green-700 font-medium"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                 >
                   Clear filters
                 </button>
@@ -255,7 +255,7 @@ export default function Home() {
                 {filteredPartnerships.map((partnership) => (
                   <tr key={partnership.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-mono font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-md border border-green-200">
+                      <span className="text-sm font-mono font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-200">
                         {partnership.id}
                       </span>
                     </td>
@@ -270,11 +270,11 @@ export default function Home() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold border ${
                         partnership.status === 'Active' 
-                          ? 'bg-green-50 text-green-700 border-green-200' 
+                          ? 'bg-blue-50 text-blue-700 border-blue-200' 
                           : 'bg-gray-50 text-gray-700 border-gray-200'
                       }`}>
                         <span className={`w-2 h-2 rounded-full mr-2 ${
-                          partnership.status === 'Active' ? 'bg-green-500' : 'bg-gray-400'
+                          partnership.status === 'Active' ? 'bg-blue-500' : 'bg-gray-400'
                         }`}></span>
                         {partnership.status}
                       </span>
@@ -343,7 +343,7 @@ export default function Home() {
                   setSearchTerm('')
                   setStatusFilter('all')
                 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
               >
                 Clear all filters
               </button>
