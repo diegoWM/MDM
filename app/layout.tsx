@@ -1,7 +1,7 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Weed Me - MDM',
+  title: 'MDM System',
   description: 'Master Data Management System',
 }
 
@@ -12,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
+      <body className="bg-gray-50 min-h-screen">
         {children}
       </body>
     </html>
