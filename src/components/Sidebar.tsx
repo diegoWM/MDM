@@ -25,148 +25,122 @@ const Sidebar: React.FC<SidebarProps> = ({ tables, selectedTable, onTableSelect,
   const totalPendingCount = tables.reduce((sum, table) => sum + table.pendingCount, 0);
 
   const getQualityColor = (score: number) => {
-    if (score >= 95) return 'text-green-400';
-    if (score >= 80) return 'text-yellow-400';
-    return 'text-red-400';
+    if (score >= 95) return isDarkMode ? 'text-green-400' : 'text-green-600';
+    if (score >= 80) return isDarkMode ? 'text-yellow-400' : 'text-yellow-600';
+    return isDarkMode ? 'text-red-400' : 'text-red-600';
   };
 
   const getQualityBg = (score: number) => {
-    if (score >= 95) return 'from-green-500/20 to-emerald-500/20';
-    if (score >= 80) return 'from-yellow-500/20 to-amber-500/20';
-    return 'from-red-500/20 to-rose-500/20';
+    if (score >= 95) return isDarkMode ? 'bg-green-500/10' : 'bg-green-100';
+    if (score >= 80) return isDarkMode ? 'bg-yellow-500/10' : 'bg-yellow-100';
+    return isDarkMode ? 'bg-red-500/10' : 'bg-red-100';
   };
 
   return (
-    <div className={`w-80 ${isDarkMode ? 'bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900' : 'bg-gradient-to-b from-white via-gray-50 to-gray-100'} backdrop-blur-sm border-r ${isDarkMode ? 'border-purple-500/30' : 'border-purple-300/40'} flex flex-col shadow-2xl`}>
-      <div className={`p-6 border-b ${isDarkMode ? 'border-purple-500/30 bg-gradient-to-r from-purple-900/50 to-green-900/50' : 'border-purple-300/40 bg-gradient-to-r from-purple-100/80 to-green-100/80'}`}>
-        <div className="flex items-center space-x-3 mb-3">
-          <div className="p-2 bg-gradient-to-r from-purple-600 to-green-600 rounded-xl shadow-lg">
-            <Shield className="h-6 w-6 text-white" />
+    <div className={`w-80 ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border-r flex flex-col`}>
+      <div className={`p-6 border-b ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+        <div className="flex items-center space-x-3 mb-2">
+          <div className={`p-2 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-100'} rounded-lg`}>
+            <Shield className={`h-5 w-5 ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`} />
           </div>
-          <div className="bg-gradient-to-r from-purple-300 via-yellow-300 to-green-300 bg-clip-text text-transparent">
-            <h2 className="text-2xl font-bold">Data Management</h2>
-          </div>
+          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Data Management</h2>
         </div>
-        <p className={`${isDarkMode ? 'text-purple-200' : 'text-purple-700'} font-semibold`}>Authoritative data sources with validation</p>
+        <p className={`${isDarkMode ? 'text-slate-400' : 'text-gray-600'} text-sm`}>Authoritative data sources with validation</p>
       </div>
       
       <nav className="flex-1 p-6 overflow-y-auto">
         {/* Global Lineage Map */}
         <div className="mb-6">
-          <button className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl ${isDarkMode ? 'bg-gradient-to-r from-indigo-600/30 to-purple-600/30 hover:from-indigo-600/40 hover:to-purple-600/40 text-indigo-300 border border-indigo-500/30' : 'bg-gradient-to-r from-indigo-100 to-purple-100 hover:from-indigo-200 hover:to-purple-200 text-indigo-700 border border-indigo-300/50'} transition-all duration-300 shadow-lg`}>
+          <button className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg ${isDarkMode ? 'bg-slate-700 hover:bg-slate-600 text-slate-300 border border-slate-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200'} transition-colors duration-200`}>
             <GitBranch className="h-5 w-5" />
-            <span className="font-semibold">Global Lineage Map</span>
+            <span className="font-medium">Global Lineage Map</span>
           </button>
         </div>
 
         {/* Sources of Truth Section */}
-        <div className={`${isDarkMode ? 'bg-gray-800/40' : 'bg-white/60'} backdrop-blur-sm rounded-2xl border ${isDarkMode ? 'border-gray-700/50' : 'border-gray-300/50'} shadow-lg`}>
+        <div className={`${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-gray-50 border-gray-200'} rounded-lg border`}>
           {/* Section Header */}
           <button
             onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-            className={`w-full flex items-center justify-between px-6 py-4 ${isDarkMode ? 'hover:bg-gray-700/30' : 'hover:bg-gray-100/50'} transition-all duration-300 rounded-t-2xl`}
+            className={`w-full flex items-center justify-between px-4 py-3 ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-gray-100'} transition-colors duration-200 rounded-t-lg`}
           >
             <div className="flex items-center space-x-3">
               {isSourcesExpanded ? (
-                <ChevronDown className={`h-5 w-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                <ChevronDown className={`h-4 w-4 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`} />
               ) : (
-                <ChevronRight className={`h-5 w-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                <ChevronRight className={`h-4 w-4 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`} />
               )}
               <div className="flex items-center space-x-2">
-                <Database className={`h-5 w-5 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
-                <span className={`font-bold text-lg ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Sources of Truth</span>
+                <Database className={`h-4 w-4 ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`} />
+                <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Sources of Truth</span>
               </div>
             </div>
             {totalPendingCount > 0 && (
-              <div className="flex items-center space-x-2">
-                <span className="bg-gradient-to-r from-red-500 to-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg border border-red-400/30">
-                  🔔 {totalPendingCount}
-                </span>
-              </div>
+              <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                {totalPendingCount}
+              </span>
             )}
           </button>
 
           {/* Tables List */}
           {isSourcesExpanded && (
-            <div className="px-4 pb-4 space-y-2">
-              {tables.map((table, index) => {
+            <div className="px-3 pb-3 space-y-1">
+              {tables.map((table) => {
                 const Icon = table.icon;
                 const isSelected = selectedTable.id === table.id;
                 
-                const gradients = [
-                  'from-purple-600 to-indigo-600',
-                  'from-green-600 to-emerald-600', 
-                  'from-blue-600 to-cyan-600',
-                  'from-orange-600 to-amber-600'
-                ];
-                
-                const hoverGradients = [
-                  'hover:from-purple-800/40 hover:to-indigo-800/40',
-                  'hover:from-green-800/40 hover:to-emerald-800/40',
-                  'hover:from-blue-800/40 hover:to-cyan-800/40', 
-                  'hover:from-orange-800/40 hover:to-amber-800/40'
-                ];
-                
-                const iconBgGradients = [
-                  'from-purple-500/30 to-indigo-500/30',
-                  'from-green-500/30 to-emerald-500/30',
-                  'from-blue-500/30 to-cyan-500/30',
-                  'from-orange-500/30 to-amber-500/30'
-                ];
-                
                 return (
-                  <div key={table.id}>
-                    <button
-                      onClick={() => onTableSelect(table)}
-                      className={`w-full flex items-center justify-between px-4 py-4 rounded-xl text-left transition-all duration-300 shadow-md border ${
-                        isSelected
-                          ? `bg-gradient-to-r ${gradients[index % gradients.length]} text-white shadow-xl transform scale-105 ${isDarkMode ? 'border-purple-400/40' : 'border-purple-300/50'}`
-                          : `${isDarkMode ? 'text-gray-300 bg-gray-800/40 border-gray-700/50 hover:border-purple-500/40' : 'text-gray-700 bg-white/40 border-gray-300/50 hover:border-purple-400/50'} ${hoverGradients[index % hoverGradients.length]} hover:shadow-lg hover:transform hover:scale-102 backdrop-blur-sm`
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-lg shadow-sm border ${
-                          isSelected 
-                            ? 'bg-white/20 backdrop-blur-sm border-white/20' 
-                            : `bg-gradient-to-r ${iconBgGradients[index % iconBgGradients.length]} ${isDarkMode ? 'border-gray-600/50' : 'border-gray-400/50'}`
-                        }`}>
-                          <Icon className={`h-5 w-5 ${
-                            isSelected ? 'text-white' : isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                          }`} />
-                        </div>
-                        <div>
-                          <div className="font-semibold">{table.name}</div>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <span className={`text-xs ${isSelected ? 'text-white/80' : isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                              {table.count} records
-                            </span>
-                            <div className={`text-xs font-bold px-2 py-1 rounded-full bg-gradient-to-r ${getQualityBg(table.qualityScore)} ${getQualityColor(table.qualityScore)}`}>
-                              {table.qualityScore}%
-                            </div>
-                          </div>
-                          {table.description && (
-                            <div className={`text-xs mt-1 ${isSelected ? 'text-white/70' : isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                              {table.description}
-                            </div>
-                          )}
-                        </div>
+                  <button
+                    key={table.id}
+                    onClick={() => onTableSelect(table)}
+                    className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-left transition-colors duration-200 ${
+                      isSelected
+                        ? `${isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white'}`
+                        : `${isDarkMode ? 'text-slate-300 hover:bg-slate-600' : 'text-gray-700 hover:bg-gray-100'}`
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-lg ${
+                        isSelected 
+                          ? 'bg-white/20' 
+                          : isDarkMode ? 'bg-slate-600' : 'bg-gray-200'
+                      }`}>
+                        <Icon className={`h-4 w-4 ${
+                          isSelected ? 'text-white' : isDarkMode ? 'text-slate-400' : 'text-gray-600'
+                        }`} />
                       </div>
-                      <div className="flex items-center space-x-2">
-                        {table.pendingCount > 0 && (
-                          <span className="bg-gradient-to-r from-red-500 to-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md border border-red-400/30">
-                            {table.pendingCount}
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium truncate">{table.name}</div>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <span className={`text-xs ${isSelected ? 'text-white/80' : isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+                            {table.count.toLocaleString()} records
                           </span>
+                          <div className={`text-xs font-medium px-2 py-0.5 rounded-full ${getQualityBg(table.qualityScore)} ${getQualityColor(table.qualityScore)}`}>
+                            {table.qualityScore}%
+                          </div>
+                        </div>
+                        {table.description && (
+                          <div className={`text-xs mt-1 ${isSelected ? 'text-white/70' : isDarkMode ? 'text-slate-500' : 'text-gray-500'} line-clamp-2`}>
+                            {table.description}
+                          </div>
                         )}
-                        <span className={`text-sm px-3 py-1 rounded-full font-bold shadow-sm border ${
-                          isSelected 
-                            ? 'bg-white/20 text-white backdrop-blur-sm border-white/20' 
-                            : `bg-gradient-to-r ${gradients[index % gradients.length]} text-white border-transparent`
-                        }`}>
-                          {table.count}
-                        </span>
                       </div>
-                    </button>
-                  </div>
+                    </div>
+                    <div className="flex items-center space-x-2 ml-2">
+                      {table.pendingCount > 0 && (
+                        <span className="bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                          {table.pendingCount}
+                        </span>
+                      )}
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                        isSelected 
+                          ? 'bg-white/20 text-white' 
+                          : isDarkMode ? 'bg-slate-600 text-slate-300' : 'bg-gray-200 text-gray-700'
+                      }`}>
+                        {table.count.toLocaleString()}
+                      </span>
+                    </div>
+                  </button>
                 );
               })}
             </div>
@@ -174,14 +148,14 @@ const Sidebar: React.FC<SidebarProps> = ({ tables, selectedTable, onTableSelect,
         </div>
       </nav>
       
-      <div className={`p-6 border-t ${isDarkMode ? 'border-purple-500/30 bg-gradient-to-r from-purple-900/30 to-green-900/30' : 'border-purple-300/40 bg-gradient-to-r from-purple-100/50 to-green-100/50'}`}>
-        <div className={`text-center ${isDarkMode ? 'bg-gray-800/60' : 'bg-white/60'} backdrop-blur-sm rounded-2xl p-6 shadow-lg border ${isDarkMode ? 'border-purple-500/30' : 'border-purple-300/40'}`}>
-          <div className="text-3xl font-bold bg-gradient-to-r from-purple-300 via-yellow-300 to-green-300 bg-clip-text text-transparent">
-            {tables.reduce((sum, table) => sum + table.count, 0)}
+      <div className={`p-6 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+        <div className={`text-center ${isDarkMode ? 'bg-slate-700/50' : 'bg-gray-50'} rounded-lg p-4 border ${isDarkMode ? 'border-slate-600' : 'border-gray-200'}`}>
+          <div className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            {tables.reduce((sum, table) => sum + table.count, 0).toLocaleString()}
           </div>
-          <p className={`text-sm ${isDarkMode ? 'text-purple-200' : 'text-purple-700'} font-bold mt-1`}>Total Records</p>
-          <div className="mt-2 text-xs">
-            <span className={`${isDarkMode ? 'text-green-400' : 'text-green-600'} font-semibold`}>
+          <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'} font-medium mt-1`}>Total Records</p>
+          <div className="mt-2">
+            <span className={`text-xs ${isDarkMode ? 'text-green-400' : 'text-green-600'} font-medium`}>
               Validated & Trusted
             </span>
           </div>

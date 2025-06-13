@@ -8,10 +8,10 @@ interface NotificationBadgeProps {
 
 const NotificationBadge: React.FC<NotificationBadgeProps> = ({ count, isDarkMode }) => {
   return (
-    <button className={`relative p-3 ${isDarkMode ? 'text-purple-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600' : 'text-purple-200 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-indigo-500'} transition-all duration-300 rounded-2xl shadow-lg border ${isDarkMode ? 'border-purple-500/30' : 'border-purple-400/40'}`}>
-      <Bell className="h-6 w-6" />
+    <button className={`relative p-2 ${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-slate-700' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-lg`}>
+      <Bell className="h-5 w-5" />
       {count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-rose-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-lg border border-red-400/30">
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
           {count > 99 ? '99+' : count}
         </span>
       )}
