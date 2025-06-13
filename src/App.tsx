@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Table, Plus, Search, Settings, Users, Package, Building, GitBranch, Bell, Monitor, Sun, Moon } from 'lucide-react';
+import { Database, Table, Plus, Search, Settings, Users, Package, Building, GitBranch, Bell, Monitor, Sun, Moon, Menu, X } from 'lucide-react';
 import TableView from './components/TableView';
 import Sidebar from './components/Sidebar';
 import EnvironmentSwitcher from './components/EnvironmentSwitcher';
@@ -54,38 +54,51 @@ function App() {
   const [currentEnvironment, setCurrentEnvironment] = useState<'production' | 'staging'>('staging');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeView, setActiveView] = useState<'data' | 'history' | 'lineage'>('data');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const totalPendingCount = sampleTables.reduce((sum, table) => sum + table.pendingCount, 0);
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'} flex`}>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} flex`}>
       {/* Sidebar */}
       <Sidebar 
         tables={sampleTables}
         selectedTable={selectedTable}
         onTableSelect={setSelectedTable}
         isDarkMode={isDarkMode}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className={`${isDarkMode ? 'bg-gradient-to-r from-purple-900/40 via-slate-800 to-green-900/40 border-slate-700' : 'bg-gradient-to-r from-purple-100/40 via-white to-green-100/40 border-gray-200'} shadow-lg border-b backdrop-blur-sm`}>
+        <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} shadow-sm border-b`}>
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className={`flex items-center justify-center w-12 h-12 ${isDarkMode ? 'bg-gradient-to-r from-purple-600/30 to-green-600/30' : 'bg-gradient-to-r from-purple-200/50 to-green-200/50'} rounded-lg border ${isDarkMode ? 'border-purple-500/30' : 'border-purple-300/40'} backdrop-blur-sm shadow-sm`}>
-                  <img 
-                    src="/public/image.png" 
-                    alt="WeedMe Logo" 
-                    className="w-8 h-8 object-contain"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-green-400 bg-clip-text text-transparent">
-                    WeedMe MDM
-                  </h1>
-                  <p className={`${isDarkMode ? 'text-purple-200' : 'text-purple-700'} text-sm font-medium`}>Sources of Truth Management</p>
+                {/* Sidebar Toggle */}
+                <button
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+                
+                <div className="flex items-center space-x-3">
+                  <div className={`flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg`}>
+                    <img 
+                      src="/public/image.png" 
+                      alt="WeedMe Logo" 
+                      className="w-6 h-6 object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
+                      WeedMe MDM
+                    </h1>
+                    <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Sources of Truth Management</p>
+                  </div>
                 </div>
               </div>
               
@@ -98,13 +111,13 @@ function App() {
 
                 {/* Global Search */}
                 <div className="relative">
-                  <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 ${isDarkMode ? 'text-purple-300' : 'text-purple-500'}`} />
+                  <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
                   <input
                     type="text"
                     placeholder="Search records... (⌘K)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`pl-10 pr-4 py-2 ${isDarkMode ? 'bg-slate-700/60 text-white placeholder-purple-300 border-purple-500/30' : 'bg-white/80 text-gray-900 placeholder-purple-400 border-purple-300/40'} border rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none w-80 backdrop-blur-sm shadow-sm`}
+                    className={`pl-10 pr-4 py-2 ${isDarkMode ? 'bg-gray-700 text-white placeholder-gray-400 border-gray-600' : 'bg-white text-gray-900 placeholder-gray-500 border-gray-300'} border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-80`}
                   />
                 </div>
 
@@ -112,7 +125,7 @@ function App() {
                 <NotificationBadge count={totalPendingCount} isDarkMode={isDarkMode} />
 
                 {/* Add Record Button */}
-                <button className="bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 font-medium shadow-md">
+                <button className="bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white px-4 py-2 rounded-md transition-all duration-200 flex items-center space-x-2 font-medium">
                   <Plus className="h-4 w-4" />
                   <span>Add Record</span>
                 </button>
@@ -120,13 +133,13 @@ function App() {
                 {/* Theme Toggle */}
                 <button 
                   onClick={() => setIsDarkMode(!isDarkMode)}
-                  className={`p-2 ${isDarkMode ? 'text-purple-300 hover:text-white hover:bg-purple-600/30' : 'text-purple-600 hover:text-purple-700 hover:bg-purple-100/50'} transition-all duration-200 rounded-lg border ${isDarkMode ? 'border-purple-500/30' : 'border-purple-300/40'} backdrop-blur-sm`}
+                  className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
                 >
                   {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </button>
 
                 {/* Settings */}
-                <button className={`p-2 ${isDarkMode ? 'text-purple-300 hover:text-white hover:bg-purple-600/30' : 'text-purple-600 hover:text-purple-700 hover:bg-purple-100/50'} transition-all duration-200 rounded-lg border ${isDarkMode ? 'border-purple-500/30' : 'border-purple-300/40'} backdrop-blur-sm`}>
+                <button className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}>
                   <Settings className="h-5 w-5" />
                 </button>
               </div>
@@ -135,8 +148,8 @@ function App() {
         </header>
 
         {/* View Tabs */}
-        <div className={`${isDarkMode ? 'bg-slate-800/60 border-slate-700' : 'bg-white/60 border-gray-200'} border-b px-6 backdrop-blur-sm`}>
-          <div className="flex space-x-1">
+        <div className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6`}>
+          <div className="flex space-x-0">
             {[
               { id: 'data', label: 'Data', icon: Table },
               { id: 'history', label: 'History', icon: GitBranch },
@@ -147,10 +160,10 @@ function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveView(tab.id as any)}
-                  className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                  className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
                     activeView === tab.id
-                      ? `${isDarkMode ? 'text-purple-300 border-purple-400 bg-gradient-to-r from-purple-900/30 to-green-900/30' : 'text-purple-600 border-purple-500 bg-gradient-to-r from-purple-100/50 to-green-100/50'}`
-                      : `${isDarkMode ? 'text-slate-400 border-transparent hover:text-purple-300 hover:bg-purple-800/20' : 'text-gray-500 border-transparent hover:text-purple-600 hover:bg-purple-50'}`
+                      ? `text-blue-600 border-blue-600`
+                      : `${isDarkMode ? 'text-gray-400 border-transparent hover:text-gray-300' : 'text-gray-500 border-transparent hover:text-gray-700'}`
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -162,7 +175,7 @@ function App() {
         </div>
 
         {/* Main Content Area */}
-        <main className={`flex-1 p-6 ${isDarkMode ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'}`}>
+        <main className={`flex-1 p-6 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
           <TableView 
             table={selectedTable}
             searchQuery={searchQuery}

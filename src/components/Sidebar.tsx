@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DivideIcon as LucideIcon, ChevronDown, ChevronRight, GitBranch, Shield, Database } from 'lucide-react';
+import { DivideIcon as LucideIcon, ChevronDown, ChevronRight, GitBranch, Shield, Database, Menu, X } from 'lucide-react';
 
 interface Table {
   id: string;
@@ -17,54 +17,113 @@ interface SidebarProps {
   selectedTable: Table;
   onTableSelect: (table: Table) => void;
   isDarkMode: boolean;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ tables, selectedTable, onTableSelect, isDarkMode }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+  tables, 
+  selectedTable, 
+  onTableSelect, 
+  isDarkMode, 
+  collapsed, 
+  onToggleCollapse 
+}) => {
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
 
   const totalPendingCount = tables.reduce((sum, table) => sum + table.pendingCount, 0);
 
-  return (
-    <div className={`w-80 ${isDarkMode ? 'bg-gradient-to-b from-slate-800 via-slate-800 to-slate-900 border-slate-700' : 'bg-gradient-to-b from-white via-gray-50 to-gray-100 border-gray-200'} border-r flex flex-col shadow-lg`}>
-      <div className={`p-6 border-b ${isDarkMode ? 'border-slate-700 bg-gradient-to-r from-purple-900/20 to-green-900/20' : 'border-gray-200 bg-gradient-to-r from-purple-100/30 to-green-100/30'}`}>
-        <div className="flex items-center space-x-3 mb-2">
-          <div className={`p-2 ${isDarkMode ? 'bg-gradient-to-r from-purple-600/30 to-green-600/30' : 'bg-gradient-to-r from-purple-200/50 to-green-200/50'} rounded-lg backdrop-blur-sm`}>
-            <Shield className={`h-5 w-5 ${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
-          </div>
-          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Data Management</h2>
+  if (collapsed) {
+    return (
+      <div className={`w-16 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r flex flex-col`}>
+        <div className="p-4">
+          <button
+            onClick={onToggleCollapse}
+            className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors duration-200 rounded-md w-full`}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
         </div>
-        <p className={`${isDarkMode ? 'text-purple-200' : 'text-purple-700'} text-sm font-medium`}>Authoritative data sources with validation</p>
+        
+        <nav className="flex-1 px-2 space-y-1">
+          {tables.map((table) => {
+            const Icon = table.icon;
+            const isSelected = selectedTable.id === table.id;
+            
+            return (
+              <button
+                key={table.id}
+                onClick={() => onTableSelect(table)}
+                className={`w-full p-3 rounded-md transition-colors duration-200 relative ${
+                  isSelected
+                    ? `bg-gradient-to-r from-purple-600 to-green-600 text-white`
+                    : `${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`
+                }`}
+                title={table.name}
+              >
+                <Icon className="h-5 w-5 mx-auto" />
+                {table.pendingCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-medium rounded-full h-4 w-4 flex items-center justify-center">
+                    {table.pendingCount > 9 ? '9+' : table.pendingCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`w-80 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r flex flex-col`}>
+      <div className={`p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className={`p-2 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg`}>
+              <Shield className="h-5 w-5 text-white" />
+            </div>
+            <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Data Management</h2>
+          </div>
+          <button
+            onClick={onToggleCollapse}
+            className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Authoritative data sources with validation</p>
       </div>
       
-      <nav className="flex-1 p-6 overflow-y-auto">
+      <nav className="flex-1 p-4 overflow-y-auto">
         {/* Global Lineage Map */}
         <div className="mb-6">
-          <button className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg ${isDarkMode ? 'bg-gradient-to-r from-indigo-600/20 to-purple-600/20 hover:from-indigo-600/30 hover:to-purple-600/30 text-indigo-300 border border-indigo-500/20' : 'bg-gradient-to-r from-indigo-100/60 to-purple-100/60 hover:from-indigo-200/60 hover:to-purple-200/60 text-indigo-700 border border-indigo-300/30'} transition-all duration-200 shadow-sm`}>
+          <button className={`w-full flex items-center space-x-3 px-4 py-3 rounded-md ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200'} transition-colors duration-200`}>
             <GitBranch className="h-5 w-5" />
             <span className="font-medium">Global Lineage Map</span>
           </button>
         </div>
 
         {/* Sources of Truth Section */}
-        <div className={`${isDarkMode ? 'bg-slate-700/30 border-slate-600/50' : 'bg-white/60 border-gray-200/60'} rounded-lg border backdrop-blur-sm shadow-sm`}>
+        <div className={`${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} rounded-md border`}>
           {/* Section Header */}
           <button
             onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-            className={`w-full flex items-center justify-between px-4 py-3 ${isDarkMode ? 'hover:bg-slate-700/40' : 'hover:bg-gray-100/40'} transition-colors duration-200 rounded-t-lg`}
+            className={`w-full flex items-center justify-between px-4 py-3 ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-100'} transition-colors duration-200 rounded-t-md`}
           >
             <div className="flex items-center space-x-3">
               {isSourcesExpanded ? (
-                <ChevronDown className={`h-4 w-4 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`} />
+                <ChevronDown className={`h-4 w-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
               ) : (
-                <ChevronRight className={`h-4 w-4 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`} />
+                <ChevronRight className={`h-4 w-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
               )}
               <div className="flex items-center space-x-2">
-                <Database className={`h-4 w-4 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                <Database className="h-4 w-4 text-blue-500" />
                 <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Sources of Truth</span>
               </div>
             </div>
             {totalPendingCount > 0 && (
-              <span className="bg-gradient-to-r from-red-500 to-rose-500 text-white text-xs font-medium px-2 py-1 rounded-full shadow-sm">
+              <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
                 {totalPendingCount}
               </span>
             )}
@@ -72,7 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({ tables, selectedTable, onTableSelect,
 
           {/* Tables List */}
           {isSourcesExpanded && (
-            <div className="px-3 pb-3 space-y-1">
+            <div className="px-2 pb-2 space-y-1">
               {tables.map((table) => {
                 const Icon = table.icon;
                 const isSelected = selectedTable.id === table.id;
@@ -81,41 +140,31 @@ const Sidebar: React.FC<SidebarProps> = ({ tables, selectedTable, onTableSelect,
                   <button
                     key={table.id}
                     onClick={() => onTableSelect(table)}
-                    className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-left transition-all duration-200 ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-colors duration-200 ${
                       isSelected
-                        ? `bg-gradient-to-r from-purple-600 to-green-600 text-white shadow-md`
-                        : `${isDarkMode ? 'text-slate-300 hover:bg-slate-600/40' : 'text-gray-700 hover:bg-gray-100/60'} hover:shadow-sm`
+                        ? `bg-gradient-to-r from-purple-600 to-green-600 text-white`
+                        : `${isDarkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`
                     }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-lg ${
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                      <div className={`p-1.5 rounded ${
                         isSelected 
-                          ? 'bg-white/20 backdrop-blur-sm' 
-                          : isDarkMode ? 'bg-slate-600/50' : 'bg-gray-200/60'
+                          ? 'bg-white/20' 
+                          : isDarkMode ? 'bg-gray-600' : 'bg-gray-200'
                       }`}>
                         <Icon className={`h-4 w-4 ${
-                          isSelected ? 'text-white' : isDarkMode ? 'text-slate-400' : 'text-gray-600'
+                          isSelected ? 'text-white' : isDarkMode ? 'text-gray-400' : 'text-gray-600'
                         }`} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="font-medium truncate">{table.name}</div>
-                        <div className={`text-xs mt-1 ${isSelected ? 'text-white/80' : isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-                          {table.count.toLocaleString()} records
-                        </div>
-                        {table.description && (
-                          <div className={`text-xs mt-1 ${isSelected ? 'text-white/70' : isDarkMode ? 'text-slate-500' : 'text-gray-500'} line-clamp-2`}>
-                            {table.description}
-                          </div>
-                        )}
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 ml-2">
-                      {table.pendingCount > 0 && (
-                        <span className="bg-gradient-to-r from-red-500 to-rose-500 text-white text-xs font-medium px-2 py-0.5 rounded-full shadow-sm">
-                          {table.pendingCount}
-                        </span>
-                      )}
-                    </div>
+                    {table.pendingCount > 0 && (
+                      <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded-full ml-2">
+                        {table.pendingCount}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -123,20 +172,6 @@ const Sidebar: React.FC<SidebarProps> = ({ tables, selectedTable, onTableSelect,
           )}
         </div>
       </nav>
-      
-      <div className={`p-6 border-t ${isDarkMode ? 'border-slate-700 bg-gradient-to-r from-purple-900/10 to-green-900/10' : 'border-gray-200 bg-gradient-to-r from-purple-100/20 to-green-100/20'}`}>
-        <div className={`text-center ${isDarkMode ? 'bg-slate-700/40' : 'bg-white/60'} rounded-lg p-4 border ${isDarkMode ? 'border-slate-600/50' : 'border-gray-200/60'} backdrop-blur-sm shadow-sm`}>
-          <div className={`text-2xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-green-400 bg-clip-text text-transparent`}>
-            {tables.reduce((sum, table) => sum + table.count, 0).toLocaleString()}
-          </div>
-          <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-gray-600'} font-medium mt-1`}>Total Records</p>
-          <div className="mt-2">
-            <span className={`text-xs ${isDarkMode ? 'text-green-400' : 'text-green-600'} font-medium`}>
-              Validated & Trusted
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
