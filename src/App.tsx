@@ -8,39 +8,43 @@ import NotificationBadge from './components/NotificationBadge';
 const sampleTables = [
   { 
     id: 'customers', 
-    name: 'Customers', 
+    name: 'Customer Master', 
     icon: Users, 
     count: 1247,
     domain: 'Sources of Truth',
     pendingCount: 3,
-    qualityScore: 92
+    qualityScore: 92,
+    description: 'Authoritative customer records with strict validation'
   },
   { 
     id: 'products', 
-    name: 'Products', 
+    name: 'Product Catalog', 
     icon: Package, 
     count: 856,
     domain: 'Sources of Truth', 
     pendingCount: 7,
-    qualityScore: 88
+    qualityScore: 88,
+    description: 'Master product information and specifications'
+  },
+  { 
+    id: 'locations', 
+    name: 'Location Registry', 
+    icon: Building, 
+    count: 324,
+    domain: 'Sources of Truth',
+    pendingCount: 2,
+    qualityScore: 95,
+    description: 'Standardized location and address data'
   },
   { 
     id: 'suppliers', 
-    name: 'Suppliers', 
-    icon: Building, 
-    count: 124,
-    domain: 'Partners',
+    name: 'Supplier Database', 
+    icon: Database, 
+    count: 189,
+    domain: 'Sources of Truth',
     pendingCount: 1,
-    qualityScore: 95
-  },
-  { 
-    id: 'categories', 
-    name: 'Categories', 
-    icon: Table, 
-    count: 45,
-    domain: 'Ref-data',
-    pendingCount: 0,
-    qualityScore: 97
+    qualityScore: 91,
+    description: 'Verified supplier and vendor information'
   }
 ];
 
@@ -83,7 +87,7 @@ function App() {
                   <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-yellow-300 to-green-300 bg-clip-text text-transparent">
                     WeedMe MDM
                   </h1>
-                  <p className={`${isDarkMode ? 'text-purple-200' : 'text-purple-100'} text-sm font-semibold tracking-wide`}>Master Data Management System</p>
+                  <p className={`${isDarkMode ? 'text-purple-200' : 'text-purple-100'} text-sm font-semibold tracking-wide`}>Sources of Truth Management</p>
                 </div>
               </div>
               
