@@ -47,6 +47,17 @@ const sampleData = {
   ]
 };
 
+// Background images for different table types
+const getBackgroundImage = (tableId: string) => {
+  const backgrounds = {
+    customers: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+    products: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+    locations: 'https://images.pexels.com/photos/2041627/pexels-photo-2041627.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop',
+    suppliers: 'https://images.pexels.com/photos/1267338/pexels-photo-1267338.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop'
+  };
+  return backgrounds[tableId as keyof typeof backgrounds] || '';
+};
+
 const TableView: React.FC<TableViewProps> = ({ 
   table, 
   searchQuery, 
@@ -62,6 +73,7 @@ const TableView: React.FC<TableViewProps> = ({
 
   const data = sampleData[table.id as keyof typeof sampleData] || [];
   const Icon = table.icon;
+  const backgroundImage = getBackgroundImage(table.id);
 
   // Filter data based on search query and status
   const filteredData = data.filter((item: any) => {
@@ -259,209 +271,225 @@ const TableView: React.FC<TableViewProps> = ({
   }
 
   return (
-    <div className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg border overflow-hidden`}>
-      {/* Table Header */}
-      <div className={`px-6 py-4 ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border-b`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className={`p-3 ${isDarkMode ? 'bg-gray-600' : 'bg-gray-200'} rounded-lg`}>
-              <Icon className={`h-6 w-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} />
-            </div>
-            <div>
-              <div className="flex items-center space-x-3">
-                <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                  {table.name}
-                </h3>
-                {currentEnvironment === 'production' && userRole === 'admin' && (
-                  <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full border border-red-200">
-                    LIVE DATA
-                  </span>
-                )}
-                {currentEnvironment === 'staging' && (
-                  <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full border border-blue-200">
-                    STAGING
-                  </span>
-                )}
+    <div 
+      className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-lg border overflow-hidden relative`}
+      style={{
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Background overlay for better readability */}
+      {backgroundImage && (
+        <div className={`absolute inset-0 ${isDarkMode ? 'bg-gray-900/85' : 'bg-white/90'} backdrop-blur-sm`}></div>
+      )}
+      
+      {/* Content with relative positioning to appear above background */}
+      <div className="relative z-10">
+        {/* Table Header */}
+        <div className={`px-6 py-4 ${isDarkMode ? 'bg-gray-700/90 border-gray-600' : 'bg-gray-50/90 border-gray-200'} border-b backdrop-blur-sm`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className={`p-3 ${isDarkMode ? 'bg-gray-600/80' : 'bg-gray-200/80'} rounded-lg backdrop-blur-sm`}>
+                <Icon className={`h-6 w-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} />
               </div>
-              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
-                {filteredData.length.toLocaleString()} of {table.count.toLocaleString()} records
-                {searchQuery && (
-                  <span className="text-blue-600 font-medium"> matching "{searchQuery}"</span>
-                )}
-              </p>
+              <div>
+                <div className="flex items-center space-x-3">
+                  <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {table.name}
+                  </h3>
+                  {currentEnvironment === 'production' && userRole === 'admin' && (
+                    <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full border border-red-200">
+                      LIVE DATA
+                    </span>
+                  )}
+                  {currentEnvironment === 'staging' && (
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full border border-blue-200">
+                      STAGING
+                    </span>
+                  )}
+                </div>
+                <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
+                  {filteredData.length.toLocaleString()} of {table.count.toLocaleString()} records
+                  {searchQuery && (
+                    <span className="text-blue-600 font-medium"> matching "{searchQuery}"</span>
+                  )}
+                </p>
+              </div>
+            </div>
+            
+            {/* Controls */}
+            <div className="flex items-center space-x-3">
+              {/* Status Filter */}
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className={`px-3 py-2 ${isDarkMode ? 'bg-gray-600/80 text-white border-gray-500' : 'bg-white/80 text-gray-900 border-gray-300'} border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm backdrop-blur-sm`}
+              >
+                <option value="all">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Pending">Pending</option>
+              </select>
+              
+              {/* View Density Toggle */}
+              <button
+                onClick={() => setViewDensity(viewDensity === 'compact' ? 'relaxed' : 'compact')}
+                className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600/80' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'} transition-colors duration-200 rounded-md border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} backdrop-blur-sm`}
+                title={`Switch to ${viewDensity === 'compact' ? 'relaxed' : 'compact'} view`}
+              >
+                {viewDensity === 'compact' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+              </button>
             </div>
           </div>
           
-          {/* Controls */}
-          <div className="flex items-center space-x-3">
-            {/* Status Filter */}
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className={`px-3 py-2 ${isDarkMode ? 'bg-gray-600 text-white border-gray-500' : 'bg-white text-gray-900 border-gray-300'} border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm`}
-            >
-              <option value="all">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Pending">Pending</option>
-            </select>
-            
-            {/* View Density Toggle */}
-            <button
-              onClick={() => setViewDensity(viewDensity === 'compact' ? 'relaxed' : 'compact')}
-              className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
-              title={`Switch to ${viewDensity === 'compact' ? 'relaxed' : 'compact'} view`}
-            >
-              {viewDensity === 'compact' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
-            </button>
-          </div>
+          {/* Bulk Actions */}
+          {selectedRows.size > 0 && (
+            <div className="mt-4 flex items-center space-x-3">
+              <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} font-medium text-sm`}>
+                {selectedRows.size} selected
+              </span>
+              {userRole === 'admin' && currentEnvironment === 'production' ? (
+                <>
+                  <button className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium text-sm">
+                    Update Records
+                  </button>
+                  <button className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 font-medium text-sm">
+                    Delete Records
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className="px-3 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors duration-200 font-medium text-sm">
+                    Propose Changes
+                  </button>
+                  <button className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium text-sm">
+                    Request Review
+                  </button>
+                </>
+              )}
+              <button className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 font-medium text-sm">
+                Export CSV
+              </button>
+            </div>
+          )}
         </div>
-        
-        {/* Bulk Actions */}
-        {selectedRows.size > 0 && (
-          <div className="mt-4 flex items-center space-x-3">
-            <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} font-medium text-sm`}>
-              {selectedRows.size} selected
-            </span>
-            {userRole === 'admin' && currentEnvironment === 'production' ? (
-              <>
-                <button className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium text-sm">
-                  Update Records
-                </button>
-                <button className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 font-medium text-sm">
-                  Delete Records
-                </button>
-              </>
-            ) : (
-              <>
-                <button className="px-3 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors duration-200 font-medium text-sm">
-                  Propose Changes
-                </button>
-                <button className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium text-sm">
-                  Request Review
-                </button>
-              </>
-            )}
-            <button className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 font-medium text-sm">
-              Export CSV
-            </button>
-          </div>
-        )}
-      </div>
 
-      {/* Table Content */}
-      <div className="overflow-x-auto">
-        {filteredData.length > 0 ? (
-          <table className="w-full">
-            <thead className={`${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-              <tr>
-                <th className={`px-4 py-${viewDensity === 'compact' ? '2' : '3'} text-left`}>
-                  <input
-                    type="checkbox"
-                    checked={selectedRows.size === filteredData.length}
-                    onChange={toggleAllRows}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
-                {getColumns().map((column) => (
-                  <th
-                    key={column}
-                    className={`px-4 py-${viewDensity === 'compact' ? '2' : '3'} text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}
-                  >
-                    {column.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                  </th>
-                ))}
-                <th className={`px-4 py-${viewDensity === 'compact' ? '2' : '3'} text-right text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
-              {filteredData.map((item: any, index: number) => (
-                <tr key={item.id || index} className={`${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} transition-colors duration-200`}>
-                  <td className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap`}>
+        {/* Table Content */}
+        <div className="overflow-x-auto">
+          {filteredData.length > 0 ? (
+            <table className="w-full">
+              <thead className={`${isDarkMode ? 'bg-gray-700/90' : 'bg-gray-50/90'} border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'} backdrop-blur-sm`}>
+                <tr>
+                  <th className={`px-4 py-${viewDensity === 'compact' ? '2' : '3'} text-left`}>
                     <input
                       type="checkbox"
-                      checked={selectedRows.has(item.id)}
-                      onChange={() => toggleRowSelection(item.id)}
+                      checked={selectedRows.size === filteredData.length}
+                      onChange={toggleAllRows}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                  </td>
+                  </th>
                   {getColumns().map((column) => (
-                    <td key={column} className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
-                      <div className="flex items-center space-x-2">
-                        {item.hasIssues && column === getColumns()[0] && (
-                          <AlertTriangle className="h-4 w-4 text-yellow-500" title="Data quality issue detected" />
-                        )}
-                        {item.hasPendingChanges && column === getColumns()[0] && (
-                          <Clock className="h-4 w-4 text-orange-500" title="Pending changes awaiting approval" />
-                        )}
-                        {column === 'status' ? (
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusBadge(item[column])}`}>
-                            {item[column]}
-                          </span>
-                        ) : (
-                          item[column]
-                        )}
+                    <th
+                      key={column}
+                      className={`px-4 py-${viewDensity === 'compact' ? '2' : '3'} text-left text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}
+                    >
+                      {column.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                    </th>
+                  ))}
+                  <th className={`px-4 py-${viewDensity === 'compact' ? '2' : '3'} text-right text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className={`${isDarkMode ? 'bg-gray-800/80' : 'bg-white/80'} divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'} backdrop-blur-sm`}>
+                {filteredData.map((item: any, index: number) => (
+                  <tr key={item.id || index} className={`${isDarkMode ? 'hover:bg-gray-700/90' : 'hover:bg-gray-50/90'} transition-colors duration-200`}>
+                    <td className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap`}>
+                      <input
+                        type="checkbox"
+                        checked={selectedRows.has(item.id)}
+                        onChange={() => toggleRowSelection(item.id)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </td>
+                    {getColumns().map((column) => (
+                      <td key={column} className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-900'}`}>
+                        <div className="flex items-center space-x-2">
+                          {item.hasIssues && column === getColumns()[0] && (
+                            <AlertTriangle className="h-4 w-4 text-yellow-500" title="Data quality issue detected" />
+                          )}
+                          {item.hasPendingChanges && column === getColumns()[0] && (
+                            <Clock className="h-4 w-4 text-orange-500" title="Pending changes awaiting approval" />
+                          )}
+                          {column === 'status' ? (
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusBadge(item[column])}`}>
+                              {item[column]}
+                            </span>
+                          ) : (
+                            item[column]
+                          )}
+                        </div>
+                      </td>
+                    ))}
+                    <td className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap text-right text-sm font-medium relative`}>
+                      <div className="flex items-center justify-end space-x-2">
+                        {/* View Button */}
+                        <button 
+                          onClick={() => handleViewRecord(item)}
+                          className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-blue-400 hover:bg-gray-600/80' : 'text-gray-400 hover:text-blue-600 hover:bg-gray-100/80'} transition-colors duration-200 rounded-md backdrop-blur-sm`}
+                          title="View record details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+                        
+                        {/* Edit Button */}
+                        <button 
+                          onClick={() => handleEditRecord(item)}
+                          className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-green-400 hover:bg-gray-600/80' : 'text-gray-400 hover:text-green-600 hover:bg-gray-100/80'} transition-colors duration-200 rounded-md backdrop-blur-sm`}
+                          title={userRole === 'admin' && currentEnvironment === 'production' ? 'Edit record (LIVE)' : 'Propose changes'}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        
+                        {/* Delete Button - Only show for admins or as proposal for users */}
+                        <button 
+                          onClick={() => handleDeleteRecord(item)}
+                          className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-red-400 hover:bg-gray-600/80' : 'text-gray-400 hover:text-red-600 hover:bg-gray-100/80'} transition-colors duration-200 rounded-md backdrop-blur-sm`}
+                          title={userRole === 'admin' && currentEnvironment === 'production' ? 'Delete record (PERMANENT)' : 'Propose deletion'}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                        
+                        {/* More Actions Button */}
+                        <button 
+                          onClick={() => handleMoreActions(item)}
+                          className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600/80' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/80'} transition-colors duration-200 rounded-md backdrop-blur-sm`}
+                          title="More actions"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </button>
                       </div>
                     </td>
-                  ))}
-                  <td className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap text-right text-sm font-medium relative`}>
-                    <div className="flex items-center justify-end space-x-2">
-                      {/* View Button */}
-                      <button 
-                        onClick={() => handleViewRecord(item)}
-                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-blue-400 hover:bg-gray-600' : 'text-gray-400 hover:text-blue-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
-                        title="View record details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      
-                      {/* Edit Button */}
-                      <button 
-                        onClick={() => handleEditRecord(item)}
-                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-green-400 hover:bg-gray-600' : 'text-gray-400 hover:text-green-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
-                        title={userRole === 'admin' && currentEnvironment === 'production' ? 'Edit record (LIVE)' : 'Propose changes'}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      
-                      {/* Delete Button - Only show for admins or as proposal for users */}
-                      <button 
-                        onClick={() => handleDeleteRecord(item)}
-                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-red-400 hover:bg-gray-600' : 'text-gray-400 hover:text-red-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
-                        title={userRole === 'admin' && currentEnvironment === 'production' ? 'Delete record (PERMANENT)' : 'Propose deletion'}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                      
-                      {/* More Actions Button */}
-                      <button 
-                        onClick={() => handleMoreActions(item)}
-                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
-                        title="More actions"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="text-center py-12">
-            <div className={`p-4 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-lg w-16 h-16 mx-auto mb-4 flex items-center justify-center`}>
-              <Icon className={`h-8 w-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="text-center py-12">
+              <div className={`p-4 ${isDarkMode ? 'bg-gray-700/80' : 'bg-gray-100/80'} rounded-lg w-16 h-16 mx-auto mb-4 flex items-center justify-center backdrop-blur-sm`}>
+                <Icon className={`h-8 w-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
+              </div>
+              <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
+                No records found
+              </h3>
+              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
+                {searchQuery ? `No records match "${searchQuery}"` : 'Get started by adding a new record.'}
+              </p>
             </div>
-            <h3 className={`text-lg font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}>
-              No records found
-            </h3>
-            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
-              {searchQuery ? `No records match "${searchQuery}"` : 'Get started by adding a new record.'}
-            </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
