@@ -58,25 +58,31 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      'Active': 'bg-green-100 text-green-800',
-      'Inactive': 'bg-red-100 text-red-800',
-      'Pending': 'bg-yellow-100 text-yellow-800'
+      'Active': 'bg-gradient-to-r from-green-400 to-green-500 text-white',
+      'Inactive': 'bg-gradient-to-r from-red-400 to-red-500 text-white',
+      'Pending': 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900'
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || 'bg-gradient-to-r from-gray-400 to-gray-500 text-white';
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-100 overflow-hidden">
       {/* Table Header */}
-      <div className="px-6 py-4 border-b border-gray-200">
+      <div className="px-8 py-6 bg-gradient-to-r from-purple-50 to-green-50 border-b border-purple-100">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Icon className="h-6 w-6 text-blue-600" />
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl">
+              <Icon className="h-6 w-6 text-white" />
+            </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">{table.name}</h3>
-              <p className="text-sm text-gray-500">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                {table.name}
+              </h3>
+              <p className="text-gray-600 font-medium">
                 {filteredData.length} of {table.count} records
-                {searchQuery && ` matching "${searchQuery}"`}
+                {searchQuery && (
+                  <span className="text-purple-600 font-semibold"> matching "{searchQuery}"</span>
+                )}
               </p>
             </div>
           </div>
@@ -87,28 +93,28 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
       <div className="overflow-x-auto">
         {filteredData.length > 0 ? (
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gradient-to-r from-purple-600 to-indigo-700">
               <tr>
                 {getColumns().map((column) => (
                   <th
                     key={column}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-8 py-4 text-left text-sm font-bold text-white uppercase tracking-wider"
                   >
                     {column.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                   </th>
                 ))}
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-8 py-4 text-right text-sm font-bold text-white uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-purple-100">
               {filteredData.map((item: any, index: number) => (
-                <tr key={item.id || index} className="hover:bg-gray-50 transition-colors">
+                <tr key={item.id || index} className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-green-50 transition-all duration-200">
                   {getColumns().map((column) => (
-                    <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td key={column} className="px-8 py-5 whitespace-nowrap text-sm font-medium text-gray-900">
                       {column === 'status' ? (
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(item[column])}`}>
+                        <span className={`inline-flex px-3 py-1 text-xs font-bold rounded-full shadow-sm ${getStatusBadge(item[column])}`}>
                           {item[column]}
                         </span>
                       ) : (
@@ -116,18 +122,18 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
                       )}
                     </td>
                   ))}
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end space-x-2">
-                      <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                  <td className="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex items-center justify-end space-x-3">
+                      <button className="p-2 text-purple-600 hover:text-white hover:bg-purple-600 transition-all duration-200 rounded-lg">
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className="text-gray-600 hover:text-gray-900 transition-colors">
+                      <button className="p-2 text-green-600 hover:text-white hover:bg-green-600 transition-all duration-200 rounded-lg">
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-900 transition-colors">
+                      <button className="p-2 text-red-600 hover:text-white hover:bg-red-600 transition-all duration-200 rounded-lg">
                         <Trash2 className="h-4 w-4" />
                       </button>
-                      <button className="text-gray-400 hover:text-gray-600 transition-colors">
+                      <button className="p-2 text-gray-600 hover:text-white hover:bg-gray-600 transition-all duration-200 rounded-lg">
                         <MoreHorizontal className="h-4 w-4" />
                       </button>
                     </div>
@@ -137,10 +143,12 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
             </tbody>
           </table>
         ) : (
-          <div className="text-center py-12">
-            <Icon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No records found</h3>
-            <p className="mt-1 text-sm text-gray-500">
+          <div className="text-center py-16">
+            <div className="p-4 bg-gradient-to-r from-purple-100 to-green-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+              <Icon className="h-10 w-10 text-purple-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No records found</h3>
+            <p className="text-gray-600 font-medium">
               {searchQuery ? `No records match "${searchQuery}"` : 'Get started by adding a new record.'}
             </p>
           </div>
