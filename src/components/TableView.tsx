@@ -58,30 +58,30 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      'Active': 'bg-gradient-to-r from-green-400 to-green-500 text-white',
-      'Inactive': 'bg-gradient-to-r from-red-400 to-red-500 text-white',
-      'Pending': 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900'
+      'Active': 'bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white shadow-lg',
+      'Inactive': 'bg-gradient-to-r from-red-400 via-pink-400 to-rose-400 text-white shadow-lg',
+      'Pending': 'bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 text-gray-900 shadow-lg'
     };
-    return colors[status as keyof typeof colors] || 'bg-gradient-to-r from-gray-400 to-gray-500 text-white';
+    return colors[status as keyof typeof colors] || 'bg-gradient-to-r from-gray-400 to-slate-400 text-white shadow-lg';
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-100 overflow-hidden">
+    <div className="bg-gradient-to-br from-white via-purple-50 to-green-50 backdrop-blur-sm rounded-3xl shadow-2xl border border-purple-200 overflow-hidden">
       {/* Table Header */}
-      <div className="px-8 py-6 bg-gradient-to-r from-purple-50 to-green-50 border-b border-purple-100">
+      <div className="px-8 py-8 bg-gradient-to-r from-purple-200 via-pink-200 to-green-200 border-b border-purple-300">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl">
-              <Icon className="h-6 w-6 text-white" />
+          <div className="flex items-center space-x-6">
+            <div className="p-4 bg-gradient-to-r from-purple-500 via-pink-500 to-green-500 rounded-2xl shadow-xl">
+              <Icon className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-700 via-pink-600 to-green-600 bg-clip-text text-transparent">
                 {table.name}
               </h3>
-              <p className="text-gray-600 font-medium">
+              <p className="text-gray-700 font-semibold text-lg">
                 {filteredData.length} of {table.count} records
                 {searchQuery && (
-                  <span className="text-purple-600 font-semibold"> matching "{searchQuery}"</span>
+                  <span className="text-purple-700 font-bold"> matching "{searchQuery}"</span>
                 )}
               </p>
             </div>
@@ -93,28 +93,28 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
       <div className="overflow-x-auto">
         {filteredData.length > 0 ? (
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-purple-600 to-indigo-700">
+            <thead className="bg-gradient-to-r from-purple-600 via-pink-500 to-green-500">
               <tr>
                 {getColumns().map((column) => (
                   <th
                     key={column}
-                    className="px-8 py-4 text-left text-sm font-bold text-white uppercase tracking-wider"
+                    className="px-8 py-5 text-left text-sm font-bold text-white uppercase tracking-wider"
                   >
                     {column.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                   </th>
                 ))}
-                <th className="px-8 py-4 text-right text-sm font-bold text-white uppercase tracking-wider">
+                <th className="px-8 py-5 text-right text-sm font-bold text-white uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-purple-100">
+            <tbody className="bg-gradient-to-b from-white to-purple-50 divide-y divide-purple-200">
               {filteredData.map((item: any, index: number) => (
-                <tr key={item.id || index} className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-green-50 transition-all duration-200">
+                <tr key={item.id || index} className="hover:bg-gradient-to-r hover:from-purple-100 hover:via-pink-100 hover:to-green-100 transition-all duration-300 hover:shadow-lg">
                   {getColumns().map((column) => (
-                    <td key={column} className="px-8 py-5 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td key={column} className="px-8 py-6 whitespace-nowrap text-sm font-semibold text-gray-800">
                       {column === 'status' ? (
-                        <span className={`inline-flex px-3 py-1 text-xs font-bold rounded-full shadow-sm ${getStatusBadge(item[column])}`}>
+                        <span className={`inline-flex px-4 py-2 text-xs font-bold rounded-full ${getStatusBadge(item[column])}`}>
                           {item[column]}
                         </span>
                       ) : (
@@ -122,19 +122,19 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
                       )}
                     </td>
                   ))}
-                  <td className="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-8 py-6 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-3">
-                      <button className="p-2 text-purple-600 hover:text-white hover:bg-purple-600 transition-all duration-200 rounded-lg">
-                        <Eye className="h-4 w-4" />
+                      <button className="p-3 text-purple-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 transition-all duration-300 rounded-xl shadow-md hover:shadow-lg transform hover:scale-110">
+                        <Eye className="h-5 w-5" />
                       </button>
-                      <button className="p-2 text-green-600 hover:text-white hover:bg-green-600 transition-all duration-200 rounded-lg">
-                        <Edit className="h-4 w-4" />
+                      <button className="p-3 text-green-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500 transition-all duration-300 rounded-xl shadow-md hover:shadow-lg transform hover:scale-110">
+                        <Edit className="h-5 w-5" />
                       </button>
-                      <button className="p-2 text-red-600 hover:text-white hover:bg-red-600 transition-all duration-200 rounded-lg">
-                        <Trash2 className="h-4 w-4" />
+                      <button className="p-3 text-red-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 transition-all duration-300 rounded-xl shadow-md hover:shadow-lg transform hover:scale-110">
+                        <Trash2 className="h-5 w-5" />
                       </button>
-                      <button className="p-2 text-gray-600 hover:text-white hover:bg-gray-600 transition-all duration-200 rounded-lg">
-                        <MoreHorizontal className="h-4 w-4" />
+                      <button className="p-3 text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 rounded-xl shadow-md hover:shadow-lg transform hover:scale-110">
+                        <MoreHorizontal className="h-5 w-5" />
                       </button>
                     </div>
                   </td>
@@ -143,12 +143,14 @@ const TableView: React.FC<TableViewProps> = ({ table, searchQuery }) => {
             </tbody>
           </table>
         ) : (
-          <div className="text-center py-16">
-            <div className="p-4 bg-gradient-to-r from-purple-100 to-green-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-              <Icon className="h-10 w-10 text-purple-600" />
+          <div className="text-center py-20">
+            <div className="p-6 bg-gradient-to-r from-purple-200 via-pink-200 to-green-200 rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-xl">
+              <Icon className="h-12 w-12 text-purple-700" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No records found</h3>
-            <p className="text-gray-600 font-medium">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-green-600 bg-clip-text text-transparent mb-3">
+              No records found
+            </h3>
+            <p className="text-gray-700 font-semibold text-lg">
               {searchQuery ? `No records match "${searchQuery}"` : 'Get started by adding a new record.'}
             </p>
           </div>
