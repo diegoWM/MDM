@@ -11,7 +11,7 @@ const sampleTables = [
     name: 'Customers', 
     icon: Users, 
     count: 1247,
-    domain: 'Stores',
+    domain: 'Sources of Truth',
     pendingCount: 3,
     qualityScore: 92
   },
@@ -20,7 +20,7 @@ const sampleTables = [
     name: 'Products', 
     icon: Package, 
     count: 856,
-    domain: 'Stores', 
+    domain: 'Sources of Truth', 
     pendingCount: 7,
     qualityScore: 88
   },
