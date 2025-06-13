@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Table, Plus, Search, Settings, Users, Package, Building, GitBranch, Bell, Monitor, Sun, Moon, Menu, X } from 'lucide-react';
+import { Database, Table, Search, Settings, Users, Package, Building, GitBranch, Bell, Monitor, Sun, Moon, Menu, X } from 'lucide-react';
 import TableView from './components/TableView';
 import Sidebar from './components/Sidebar';
 import EnvironmentSwitcher from './components/EnvironmentSwitcher';
@@ -101,60 +101,39 @@ function App() {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-3">
-                {/* Role Indicator & Environment Switcher */}
-                <div className="flex items-center space-x-3">
-                  {/* Role Badge */}
-                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                    userRole === 'admin' 
-                      ? 'bg-blue-100 text-blue-800 border border-blue-200' 
-                      : 'bg-gray-100 text-gray-800 border border-gray-200'
-                  }`}>
-                    {userRole === 'admin' ? 'Administrator' : 'User'}
-                  </span>
-
-                  {/* Environment Switcher - Only for admins */}
-                  {userRole === 'admin' ? (
-                    <EnvironmentSwitcher 
-                      currentEnvironment={currentEnvironment}
-                      onEnvironmentChange={setCurrentEnvironment}
-                      userRole={userRole}
-                      pendingChangesCount={pendingChangesCount}
-                    />
-                  ) : (
-                    <div className="flex items-center space-x-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-md border border-blue-200">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="text-sm font-medium">Staging Environment</span>
-                    </div>
-                  )}
-                </div>
-
+              <div className="flex items-center space-x-4">
                 {/* Global Search */}
                 <div className="relative">
                   <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
                   <input
                     type="text"
-                    placeholder="Search records... (⌘K)"
+                    placeholder="Search records..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className={`pl-10 pr-4 py-2 ${isDarkMode ? 'bg-gray-700 text-white placeholder-gray-400 border-gray-600' : 'bg-white text-gray-900 placeholder-gray-500 border-gray-300'} border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-80`}
                   />
                 </div>
 
-                {/* Notifications */}
-                <NotificationBadge count={totalPendingCount} isDarkMode={isDarkMode} />
-
-                {/* Add Record Button */}
-                <button className="bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white px-4 py-2 rounded-md transition-all duration-200 flex items-center space-x-2 font-medium">
-                  <Plus className="h-4 w-4" />
-                  <span>{userRole === 'admin' ? 'Add Record' : 'Propose Record'}</span>
-                </button>
+                {/* Environment Indicator - Subtle for users, prominent for admins */}
+                {userRole === 'admin' ? (
+                  <EnvironmentSwitcher 
+                    currentEnvironment={currentEnvironment}
+                    onEnvironmentChange={setCurrentEnvironment}
+                    userRole={userRole}
+                    pendingChangesCount={pendingChangesCount}
+                  />
+                ) : (
+                  <div className={`flex items-center space-x-2 px-3 py-1 ${isDarkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-600'} rounded-md text-sm`}>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>Staging</span>
+                  </div>
+                )}
 
                 {/* Admin Panel Button - Only for admins */}
                 {userRole === 'admin' && pendingChangesCount > 0 && (
                   <button className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md transition-colors duration-200 flex items-center space-x-2 font-medium">
                     <Bell className="h-4 w-4" />
-                    <span>Review Changes ({pendingChangesCount})</span>
+                    <span>Review ({pendingChangesCount})</span>
                   </button>
                 )}
 
