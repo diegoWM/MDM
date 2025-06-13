@@ -15,10 +15,10 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({
       <select
         value={currentEnvironment}
         onChange={(e) => onEnvironmentChange(e.target.value as 'production' | 'staging')}
-        className={`appearance-none px-3 py-2 pr-8 rounded-lg font-medium text-sm border transition-colors duration-200 ${
+        className={`appearance-none px-3 py-2 pr-8 rounded-lg font-medium text-sm border transition-all duration-200 shadow-sm ${
           currentEnvironment === 'production'
-            ? 'bg-red-600 hover:bg-red-700 text-white border-red-500'
-            : 'bg-green-600 hover:bg-green-700 text-white border-green-500'
+            ? 'bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white border-red-400/30'
+            : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-green-400/30'
         }`}
       >
         <option value="staging">Staging</option>
