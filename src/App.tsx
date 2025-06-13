@@ -55,6 +55,10 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeView, setActiveView] = useState<'data' | 'history' | 'lineage'>('data');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
+  // Role management - in real app this would come from authentication
+  const [userRole, setUserRole] = useState<'admin' | 'user'>('admin'); // Change to 'user' to test user experience
+  const [pendingChangesCount, setPendingChangesCount] = useState(13); // Changes awaiting approval
 
   const totalPendingCount = sampleTables.reduce((sum, table) => sum + table.pendingCount, 0);
 
@@ -89,15 +93,41 @@ function App() {
                   <h1 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
                     Sources of Truth Management
                   </h1>
+                  {userRole === 'user' && (
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} mt-1`}>
+                      Changes require admin approval before going live
+                    </p>
+                  )}
                 </div>
               </div>
               
               <div className="flex items-center space-x-3">
-                {/* Environment Switcher */}
-                <EnvironmentSwitcher 
-                  currentEnvironment={currentEnvironment}
-                  onEnvironmentChange={setCurrentEnvironment}
-                />
+                {/* Role Indicator & Environment Switcher */}
+                <div className="flex items-center space-x-3">
+                  {/* Role Badge */}
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                    userRole === 'admin' 
+                      ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                      : 'bg-gray-100 text-gray-800 border border-gray-200'
+                  }`}>
+                    {userRole === 'admin' ? 'Administrator' : 'User'}
+                  </span>
+
+                  {/* Environment Switcher - Only for admins */}
+                  {userRole === 'admin' ? (
+                    <EnvironmentSwitcher 
+                      currentEnvironment={currentEnvironment}
+                      onEnvironmentChange={setCurrentEnvironment}
+                      userRole={userRole}
+                      pendingChangesCount={pendingChangesCount}
+                    />
+                  ) : (
+                    <div className="flex items-center space-x-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-md border border-blue-200">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium">Staging Environment</span>
+                    </div>
+                  )}
+                </div>
 
                 {/* Global Search */}
                 <div className="relative">
@@ -117,7 +147,23 @@ function App() {
                 {/* Add Record Button */}
                 <button className="bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white px-4 py-2 rounded-md transition-all duration-200 flex items-center space-x-2 font-medium">
                   <Plus className="h-4 w-4" />
-                  <span>Add Record</span>
+                  <span>{userRole === 'admin' ? 'Add Record' : 'Propose Record'}</span>
+                </button>
+
+                {/* Admin Panel Button - Only for admins */}
+                {userRole === 'admin' && pendingChangesCount > 0 && (
+                  <button className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md transition-colors duration-200 flex items-center space-x-2 font-medium">
+                    <Bell className="h-4 w-4" />
+                    <span>Review Changes ({pendingChangesCount})</span>
+                  </button>
+                )}
+
+                {/* Role Switcher (for demo purposes) */}
+                <button
+                  onClick={() => setUserRole(userRole === 'admin' ? 'user' : 'admin')}
+                  className={`px-3 py-2 text-xs font-medium rounded-md ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} transition-colors duration-200`}
+                >
+                  Switch to {userRole === 'admin' ? 'User' : 'Admin'}
                 </button>
 
                 {/* Theme Toggle */}
@@ -135,6 +181,17 @@ function App() {
               </div>
             </div>
           </div>
+
+          {/* Production Warning Banner - Only for admins in production */}
+          {userRole === 'admin' && currentEnvironment === 'production' && (
+            <div className="bg-red-600 text-white px-6 py-2 border-t border-red-500">
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-2 h-2 bg-red-300 rounded-full animate-pulse"></div>
+                <span className="font-medium text-sm">⚠️ LIVE PRODUCTION ENVIRONMENT - Changes affect real data and downstream systems</span>
+                <div className="w-2 h-2 bg-red-300 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          )}
         </header>
 
         {/* View Tabs */}
@@ -171,6 +228,8 @@ function App() {
             searchQuery={searchQuery}
             activeView={activeView}
             isDarkMode={isDarkMode}
+            userRole={userRole}
+            currentEnvironment={currentEnvironment}
           />
         </main>
       </div>
