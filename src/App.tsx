@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Table, Search, Settings, Users, Package, Building, GitBranch, Bell, Monitor, Sun, Moon, Menu, X } from 'lucide-react';
+import { Database, Table, Search, Settings, Users, Package, Building, GitBranch, Bell, Monitor, Menu, X } from 'lucide-react';
 import TableView from './components/TableView';
 import Sidebar from './components/Sidebar';
 import EnvironmentSwitcher from './components/EnvironmentSwitcher';
@@ -143,14 +143,6 @@ function App() {
                   className={`px-3 py-2 text-xs font-medium rounded-md ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} transition-colors duration-200`}
                 >
                   Switch to {userRole === 'admin' ? 'User' : 'Admin'}
-                </button>
-
-                {/* Theme Toggle */}
-                <button 
-                  onClick={() => setIsDarkMode(!isDarkMode)}
-                  className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
-                >
-                  {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </button>
 
                 {/* Settings */}
