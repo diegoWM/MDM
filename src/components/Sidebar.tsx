@@ -101,14 +101,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       
       <nav className="flex-1 p-4 overflow-y-auto">
-        {/* Global Lineage Map */}
-        <div className="mb-6">
-          <button className={`w-full flex items-center space-x-3 px-4 py-3 rounded-md ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200'} transition-colors duration-200`}>
-            <GitBranch className="h-5 w-5" />
-            <span className="font-medium">Global Lineage Map</span>
-          </button>
-        </div>
-
         {/* Sources of Truth Section */}
         <div className={`${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} rounded-md border`}>
           {/* Section Header */}
