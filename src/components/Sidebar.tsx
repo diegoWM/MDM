@@ -80,10 +80,16 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className={`p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className={`p-2 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg`}>
-              <Shield className="h-5 w-5 text-white" />
+            <div className={`flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg`}>
+              <img 
+                src="/public/image.png" 
+                alt="WeedMe Logo" 
+                className="w-6 h-6 object-contain"
+              />
             </div>
-            <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Data Management</h2>
+            <h2 className={`text-lg font-semibold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent`}>
+              WeedMe MDM
+            </h2>
           </div>
           <button
             onClick={onToggleCollapse}
@@ -92,7 +98,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             <X className="h-4 w-4" />
           </button>
         </div>
-        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Authoritative data sources with validation</p>
       </div>
       
       <nav className="flex-1 p-4 overflow-y-auto">

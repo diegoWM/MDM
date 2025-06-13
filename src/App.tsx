@@ -85,20 +85,10 @@ function App() {
                   <Menu className="h-5 w-5" />
                 </button>
                 
-                <div className="flex items-center space-x-3">
-                  <div className={`flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg`}>
-                    <img 
-                      src="/public/image.png" 
-                      alt="WeedMe Logo" 
-                      className="w-6 h-6 object-contain"
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
-                      WeedMe MDM
-                    </h1>
-                    <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Sources of Truth Management</p>
-                  </div>
+                <div>
+                  <h1 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent">
+                    Sources of Truth Management
+                  </h1>
                 </div>
               </div>
               
