@@ -58,6 +58,7 @@ const TableView: React.FC<TableViewProps> = ({
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [viewDensity, setViewDensity] = useState<'compact' | 'relaxed'>('relaxed');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [showActionMenu, setShowActionMenu] = useState<number | null>(null);
 
   const data = sampleData[table.id as keyof typeof sampleData] || [];
   const Icon = table.icon;
@@ -101,6 +102,50 @@ const TableView: React.FC<TableViewProps> = ({
     } else {
       setSelectedRows(new Set(filteredData.map((item: any) => item.id)));
     }
+  };
+
+  // Action handlers
+  const handleViewRecord = (item: any) => {
+    alert(`📋 Viewing details for: ${item.name || item.id}\n\nThis would open a detailed view modal with all record information.`);
+    setShowActionMenu(null);
+  };
+
+  const handleEditRecord = (item: any) => {
+    if (userRole === 'admin' && currentEnvironment === 'production') {
+      alert(`✏️ Editing record: ${item.name || item.id}\n\n⚠️ LIVE PRODUCTION EDIT\nChanges will be applied immediately to production data.`);
+    } else {
+      alert(`📝 Proposing changes for: ${item.name || item.id}\n\nYour changes will be saved as a proposal and require admin approval before going live.`);
+    }
+    setShowActionMenu(null);
+  };
+
+  const handleDeleteRecord = (item: any) => {
+    if (userRole === 'admin' && currentEnvironment === 'production') {
+      if (confirm(`🗑️ DELETE PRODUCTION RECORD\n\nAre you sure you want to permanently delete: ${item.name || item.id}?\n\nThis action cannot be undone and will affect downstream systems immediately.`)) {
+        alert(`Record deleted from production database.`);
+      }
+    } else {
+      alert(`🗑️ Deletion proposal created for: ${item.name || item.id}\n\nThis deletion request will be reviewed by an admin before being applied.`);
+    }
+    setShowActionMenu(null);
+  };
+
+  const handleMoreActions = (item: any) => {
+    const actions = [
+      '📊 View Audit Trail',
+      '🔄 View Change History', 
+      '🔗 View Data Lineage',
+      '📤 Export Record',
+      '🏷️ Add Tags',
+      '📋 Duplicate Record'
+    ];
+    
+    const action = prompt(`More actions for: ${item.name || item.id}\n\nSelect an action:\n${actions.map((a, i) => `${i + 1}. ${a}`).join('\n')}\n\nEnter number (1-${actions.length}):`);
+    
+    if (action && parseInt(action) >= 1 && parseInt(action) <= actions.length) {
+      alert(`${actions[parseInt(action) - 1]} - Feature coming soon!`);
+    }
+    setShowActionMenu(null);
   };
 
   if (activeView === 'history') {
@@ -265,6 +310,7 @@ const TableView: React.FC<TableViewProps> = ({
             <button
               onClick={() => setViewDensity(viewDensity === 'compact' ? 'relaxed' : 'compact')}
               className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
+              title={`Switch to ${viewDensity === 'compact' ? 'relaxed' : 'compact'} view`}
             >
               {viewDensity === 'compact' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
             </button>
@@ -360,20 +406,41 @@ const TableView: React.FC<TableViewProps> = ({
                       </div>
                     </td>
                   ))}
-                  <td className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap text-right text-sm font-medium`}>
+                  <td className={`px-4 py-${viewDensity === 'compact' ? '2' : '4'} whitespace-nowrap text-right text-sm font-medium relative`}>
                     <div className="flex items-center justify-end space-x-2">
-                      <button className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}>
+                      {/* View Button */}
+                      <button 
+                        onClick={() => handleViewRecord(item)}
+                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-blue-400 hover:bg-gray-600' : 'text-gray-400 hover:text-blue-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
+                        title="View record details"
+                      >
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}>
+                      
+                      {/* Edit Button */}
+                      <button 
+                        onClick={() => handleEditRecord(item)}
+                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-green-400 hover:bg-gray-600' : 'text-gray-400 hover:text-green-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
+                        title={userRole === 'admin' && currentEnvironment === 'production' ? 'Edit record (LIVE)' : 'Propose changes'}
+                      >
                         <Edit className="h-4 w-4" />
                       </button>
-                      {(userRole === 'admin' && currentEnvironment === 'production') && (
-                        <button className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}>
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                      <button className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}>
+                      
+                      {/* Delete Button - Only show for admins or as proposal for users */}
+                      <button 
+                        onClick={() => handleDeleteRecord(item)}
+                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-red-400 hover:bg-gray-600' : 'text-gray-400 hover:text-red-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
+                        title={userRole === 'admin' && currentEnvironment === 'production' ? 'Delete record (PERMANENT)' : 'Propose deletion'}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                      
+                      {/* More Actions Button */}
+                      <button 
+                        onClick={() => handleMoreActions(item)}
+                        className={`p-2 ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'} transition-colors duration-200 rounded-md`}
+                        title="More actions"
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </button>
                     </div>
