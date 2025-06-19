@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Database, ChevronLeft, GitBranch, Users, Package, Building, BarChart3 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Database, ChevronLeft, GitBranch, Users, Package, Building, BarChart3, ClipboardCheck, Edit3 } from 'lucide-react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface Table {
@@ -45,18 +45,18 @@ const Sidebar: React.FC<SidebarProps> = ({
       description: 'Master data repositories'
     },
     {
-      id: 'analytics',
-      name: 'Analytics',
-      icon: BarChart3,
+      id: 'quality-control',
+      name: 'Quality Control',
+      icon: ClipboardCheck,
       tables: [],
-      description: 'Data insights and reports'
+      description: 'Data quality and validation'
     },
     {
-      id: 'governance',
-      name: 'Data Governance',
-      icon: Users,
+      id: 'data-entry',
+      name: 'Data Entry',
+      icon: Edit3,
       tables: [],
-      description: 'Quality and compliance'
+      description: 'Data input and management'
     }
   ];
 
