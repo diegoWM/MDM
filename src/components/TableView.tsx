@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Eye, Edit, Trash2, MoreHorizontal, Filter, Users, AlertTriangle, Clock, Download } from 'lucide-react';
+import { Eye, Edit, Trash2, MoreHorizontal, Filter, Users, AlertTriangle, Clock, Download, FileSpreadsheet, FileText } from 'lucide-react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
+import { exportToCSV, exportToExcel, getExportFilename } from '../utils/exportUtils';
 
 interface Table {
   id: string;
@@ -27,22 +28,28 @@ const sampleData = {
     { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', status: 'Active', created: '2024-01-20', hasIssues: true, hasPendingChanges: false },
     { id: 3, name: 'Mike Wilson', email: 'mike@example.com', status: 'Inactive', created: '2024-01-25', hasIssues: false, hasPendingChanges: false },
     { id: 4, name: 'Emily Davis', email: 'emily@example.com', status: 'Pending', created: '2024-02-01', hasIssues: false, hasPendingChanges: true },
+    { id: 5, name: 'Robert Brown', email: 'robert@example.com', status: 'Active', created: '2024-02-05', hasIssues: false, hasPendingChanges: false },
+    { id: 6, name: 'Lisa Anderson', email: 'lisa@example.com', status: 'Active', created: '2024-02-10', hasIssues: false, hasPendingChanges: true },
   ],
   products: [
     { id: 1, name: 'Laptop Pro', category: 'Electronics', price: '$1,299', stock: 45, hasIssues: false, hasPendingChanges: false },
     { id: 2, name: 'Wireless Mouse', category: 'Accessories', price: '$29', stock: 120, hasIssues: true, hasPendingChanges: true },
     { id: 3, name: 'Monitor 4K', category: 'Electronics', price: '$399', stock: 23, hasIssues: false, hasPendingChanges: false },
     { id: 4, name: 'Keyboard Mechanical', category: 'Accessories', price: '$89', stock: 67, hasIssues: false, hasPendingChanges: true },
+    { id: 5, name: 'Webcam HD', category: 'Electronics', price: '$79', stock: 34, hasIssues: false, hasPendingChanges: false },
+    { id: 6, name: 'USB Cable', category: 'Accessories', price: '$15', stock: 200, hasIssues: false, hasPendingChanges: false },
   ],
   locations: [
     { id: 1, name: 'New York Office', address: '123 Broadway, NY', type: 'Office', capacity: 150, hasIssues: false, hasPendingChanges: false },
     { id: 2, name: 'LA Warehouse', address: '456 Sunset Blvd, CA', type: 'Warehouse', capacity: 500, hasIssues: false, hasPendingChanges: true },
     { id: 3, name: 'Chicago Store', address: '789 Michigan Ave, IL', type: 'Retail', capacity: 75, hasIssues: true, hasPendingChanges: false },
+    { id: 4, name: 'Miami Branch', address: '321 Ocean Dr, FL', type: 'Office', capacity: 100, hasIssues: false, hasPendingChanges: false },
   ],
   suppliers: [
     { id: 1, name: 'Tech Solutions Inc', contact: 'contact@techsol.com', location: 'New York', rating: '4.8', hasIssues: false, hasPendingChanges: false },
     { id: 2, name: 'Global Electronics', contact: 'info@globalelec.com', location: 'California', rating: '4.5', hasIssues: false, hasPendingChanges: true },
     { id: 3, name: 'Component Masters', contact: 'sales@compmasters.com', location: 'Texas', rating: '4.7', hasIssues: true, hasPendingChanges: false },
+    { id: 4, name: 'Supply Chain Pro', contact: 'hello@supplychain.com', location: 'Florida', rating: '4.9', hasIssues: false, hasPendingChanges: false },
   ]
 };
 
@@ -55,6 +62,7 @@ const TableView: React.FC<TableViewProps> = ({
   onSelectedRowsChange
 }) => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   const data = sampleData[table.id as keyof typeof sampleData] || [];
   const Icon = table.icon;
@@ -98,6 +106,26 @@ const TableView: React.FC<TableViewProps> = ({
     } else {
       onSelectedRowsChange(new Set(filteredData.map((item: any) => item.id)));
     }
+  };
+
+  const handleExportCSV = () => {
+    const dataToExport = selectedRows.size > 0 
+      ? filteredData.filter((item: any) => selectedRows.has(item.id))
+      : filteredData;
+    
+    const filename = getExportFilename(table.name, 'csv');
+    exportToCSV(dataToExport, filename);
+    setShowExportMenu(false);
+  };
+
+  const handleExportExcel = () => {
+    const dataToExport = selectedRows.size > 0 
+      ? filteredData.filter((item: any) => selectedRows.has(item.id))
+      : filteredData;
+    
+    const filename = getExportFilename(table.name, 'excel');
+    exportToExcel(dataToExport, filename, table.name);
+    setShowExportMenu(false);
   };
 
   if (activeView !== 'data') {
@@ -164,6 +192,46 @@ const TableView: React.FC<TableViewProps> = ({
           
           {/* Controls */}
           <div className="flex items-center space-x-3">
+            {/* Export Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-500/80 hover:bg-blue-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm"
+              >
+                <Download className="h-4 w-4" />
+                <span>Export</span>
+              </button>
+              
+              {showExportMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 backdrop-blur-sm">
+                  <div className="py-2">
+                    <button
+                      onClick={handleExportCSV}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200"
+                    >
+                      <FileText className="h-4 w-4" />
+                      <span>Export as CSV</span>
+                    </button>
+                    <button
+                      onClick={handleExportExcel}
+                      className="w-full flex items-center space-x-3 px-4 py-2 text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200"
+                    >
+                      <FileSpreadsheet className="h-4 w-4" />
+                      <span>Export as Excel</span>
+                    </button>
+                  </div>
+                  <div className="border-t border-gray-600 py-2">
+                    <div className="px-4 py-1 text-xs text-gray-500">
+                      {selectedRows.size > 0 
+                        ? `${selectedRows.size} selected records`
+                        : `All ${filteredData.length} records`
+                      }
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Status Filter */}
             <div className="relative">
               <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -216,14 +284,18 @@ const TableView: React.FC<TableViewProps> = ({
               <button className="px-4 py-2 bg-blue-500/80 hover:bg-blue-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm">
                 Request Review
               </button>
-              <button className="px-4 py-2 bg-green-500/80 hover:bg-green-500 text-white rounded-lg transition-all duration-200 font-medium flex items-center space-x-2 backdrop-blur-sm">
-                <Download className="h-4 w-4" />
-                <span>Export CSV</span>
-              </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Click outside to close export menu */}
+      {showExportMenu && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowExportMenu(false)}
+        />
+      )}
 
       {/* Table Content */}
       <div className="overflow-x-auto">
