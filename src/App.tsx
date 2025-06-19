@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Users, Package, Building, Search, Settings, Bell, Menu, X, Grid, ChevronDown, Eye, Edit, Trash2, MoreHorizontal } from 'lucide-react';
+import { Database, Users, Package, Building, Grid } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import TableView from './components/TableView';
 import Header from './components/Header';
@@ -87,10 +87,10 @@ function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveView(tab.id as any)}
-                  className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                  className={`flex items-center space-x-2 px-6 py-4 text-sm font-semibold transition-all duration-200 border-b-2 ${
                     activeView === tab.id
-                      ? 'text-blue-400 border-blue-400'
-                      : 'text-slate-400 border-transparent hover:text-slate-300'
+                      ? 'text-blue-400 border-blue-400 bg-slate-700/50'
+                      : 'text-slate-400 border-transparent hover:text-slate-300 hover:bg-slate-700/30'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
