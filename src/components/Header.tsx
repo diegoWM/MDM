@@ -21,36 +21,36 @@ const Header: React.FC<HeaderProps> = ({
   onToggleSidebar
 }) => {
   return (
-    <header className="bg-slate-800 shadow-lg border-b border-slate-700">
-      <div className="px-6 py-4">
+    <header className="bg-white shadow-sm border-b border-gray-200">
+      <div className="px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             {/* Sidebar Toggle */}
             <button
               onClick={onToggleSidebar}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors duration-200 rounded-lg"
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md"
             >
               <Menu className="h-5 w-5" />
             </button>
             
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-xl font-semibold text-gray-900">
                 Sources of Truth Management
               </h1>
-              <p className="text-sm text-slate-400 mt-1">Centralized master data governance platform</p>
+              <p className="text-sm text-gray-500 mt-0.5">Centralized master data governance platform</p>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
             {/* Global Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search records..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10 pr-4 py-2.5 bg-slate-700 text-white placeholder-slate-400 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-80 transition-all duration-200"
+                className="pl-10 pr-4 py-2 bg-white text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-80 transition-all duration-200"
               />
             </div>
 
@@ -59,24 +59,24 @@ const Header: React.FC<HeaderProps> = ({
               <select
                 value={currentEnvironment}
                 onChange={(e) => onEnvironmentChange(e.target.value as 'staging' | 'production')}
-                className={`appearance-none px-4 py-2.5 pr-10 rounded-lg font-semibold text-sm border transition-all duration-200 min-w-[130px] ${
+                className={`appearance-none px-3 py-2 pr-8 rounded-md font-medium text-sm border transition-all duration-200 min-w-[120px] ${
                   currentEnvironment === 'production'
-                    ? 'bg-red-600 hover:bg-red-700 text-white border-red-500 shadow-lg'
-                    : 'bg-green-600 hover:bg-green-700 text-white border-green-500 shadow-lg'
+                    ? 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
+                    : 'bg-green-50 hover:bg-green-100 text-green-700 border-green-200'
                 }`}
               >
                 <option value="staging">Staging</option>
                 <option value="production">Production</option>
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-current pointer-events-none" />
             </div>
 
             {/* Review Button */}
             {totalPendingCount > 0 && (
-              <button className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-lg transition-all duration-200 flex items-center space-x-2 font-semibold shadow-lg hover:shadow-xl">
+              <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-all duration-200 flex items-center space-x-2 font-medium">
                 <Bell className="h-4 w-4" />
                 <span>Review</span>
-                <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                <span className="bg-orange-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   {totalPendingCount}
                 </span>
               </button>
@@ -84,18 +84,18 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* User Menu */}
             <div className="flex items-center space-x-3">
-              <button className="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white transition-all duration-200">
+              <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-700 transition-all duration-200">
                 Switch to User
               </button>
               
-              <div className="h-6 w-px bg-slate-600"></div>
+              <div className="h-5 w-px bg-gray-300"></div>
               
-              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors duration-200 rounded-lg">
-                <Settings className="h-5 w-5" />
+              <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md">
+                <Settings className="h-4 w-4" />
               </button>
               
-              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors duration-200 rounded-lg">
-                <User className="h-5 w-5" />
+              <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md">
+                <User className="h-4 w-4" />
               </button>
             </div>
           </div>

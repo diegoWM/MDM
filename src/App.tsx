@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Users, Package, Building, Grid } from 'lucide-react';
+import { Database, Users, Package, Building, BarChart3 } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import TableView from './components/TableView';
 import Header from './components/Header';
@@ -50,7 +50,7 @@ function App() {
   const totalPendingCount = sampleTables.reduce((sum, table) => sum + table.pendingCount, 0);
 
   return (
-    <div className="min-h-screen bg-slate-900 flex">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
       <Sidebar 
         tables={sampleTables}
@@ -75,10 +75,10 @@ function App() {
         />
 
         {/* View Tabs */}
-        <div className="bg-slate-800 border-b border-slate-700 px-6">
-          <div className="flex space-x-0">
+        <div className="bg-white border-b border-gray-200 px-8">
+          <div className="flex space-x-8">
             {[
-              { id: 'data', label: 'Data', icon: Grid },
+              { id: 'data', label: 'Data', icon: BarChart3 },
               { id: 'history', label: 'History', icon: Database },
               { id: 'lineage', label: 'Lineage', icon: Database }
             ].map((tab) => {
@@ -87,10 +87,10 @@ function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveView(tab.id as any)}
-                  className={`flex items-center space-x-2 px-6 py-4 text-sm font-semibold transition-all duration-200 border-b-2 ${
+                  className={`flex items-center space-x-2 px-1 py-4 text-sm font-medium transition-all duration-300 border-b-2 relative ${
                     activeView === tab.id
-                      ? 'text-blue-400 border-blue-400 bg-slate-700/50'
-                      : 'text-slate-400 border-transparent hover:text-slate-300 hover:bg-slate-700/30'
+                      ? 'text-blue-600 border-blue-600'
+                      : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -102,7 +102,7 @@ function App() {
         </div>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 bg-slate-900">
+        <main className="flex-1 p-8 bg-gray-50">
           <TableView 
             table={selectedTable}
             searchQuery={searchQuery}
