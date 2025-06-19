@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Database, ChevronLeft, GitBranch } from 'lucide-react';
+import { ChevronDown, ChevronRight, Database, ChevronLeft, GitBranch, Users, Package, Building, BarChart3 } from 'lucide-react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface Table {
@@ -7,6 +7,14 @@ interface Table {
   name: string;
   icon: LucideIcon;
   count: number;
+  description?: string;
+}
+
+interface Section {
+  id: string;
+  name: string;
+  icon: LucideIcon;
+  tables: Table[];
   description?: string;
 }
 
@@ -25,7 +33,42 @@ const Sidebar: React.FC<SidebarProps> = ({
   collapsed, 
   onToggleCollapse
 }) => {
-  const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['sources-of-truth']));
+
+  // Group tables into sections
+  const sections: Section[] = [
+    {
+      id: 'sources-of-truth',
+      name: 'Sources of Truth',
+      icon: Database,
+      tables: tables,
+      description: 'Master data repositories'
+    },
+    {
+      id: 'analytics',
+      name: 'Analytics',
+      icon: BarChart3,
+      tables: [],
+      description: 'Data insights and reports'
+    },
+    {
+      id: 'governance',
+      name: 'Data Governance',
+      icon: Users,
+      tables: [],
+      description: 'Quality and compliance'
+    }
+  ];
+
+  const toggleSection = (sectionId: string) => {
+    const newExpanded = new Set(expandedSections);
+    if (newExpanded.has(sectionId)) {
+      newExpanded.delete(sectionId);
+    } else {
+      newExpanded.add(sectionId);
+    }
+    setExpandedSections(newExpanded);
+  };
 
   if (collapsed) {
     return (
@@ -41,20 +84,19 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
         
         <nav className="flex-1 px-3 py-4 space-y-2">
-          {tables.map((table) => {
-            const Icon = table.icon;
-            const isSelected = selectedTable.id === table.id;
+          {sections.map((section) => {
+            const Icon = section.icon;
+            const isActive = section.id === 'sources-of-truth' && section.tables.some(table => table.id === selectedTable.id);
             
             return (
               <button
-                key={table.id}
-                onClick={() => onTableSelect(table)}
+                key={section.id}
                 className={`w-full p-2.5 rounded-lg transition-all duration-200 relative group ${
-                  isSelected
+                  isActive
                     ? 'bg-green-500/20 text-green-400 shadow-lg shadow-green-500/10'
                     : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
                 }`}
-                title={table.name}
+                title={section.name}
               >
                 <Icon className="h-5 w-5 mx-auto" />
               </button>
@@ -97,68 +139,114 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       
-      <nav className="flex-1 p-6 overflow-y-auto space-y-6">
-        {/* Sources of Truth Section */}
-        <div>
-          <button
-            onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-700/50 transition-colors duration-200 rounded-lg mb-3"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gray-700/50 rounded-lg">
-                <Database className="h-4 w-4 text-gray-400" />
-              </div>
-              <span className="font-semibold text-white">Sources of Truth</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              {isSourcesExpanded ? (
-                <ChevronDown className="h-4 w-4 text-gray-400" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-gray-400" />
+      <nav className="flex-1 p-6 overflow-y-auto space-y-4">
+        {/* Sections */}
+        {sections.map((section) => {
+          const Icon = section.icon;
+          const isExpanded = expandedSections.has(section.id);
+          const isActive = section.id === 'sources-of-truth' && section.tables.some(table => table.id === selectedTable.id);
+          
+          return (
+            <div key={section.id}>
+              <button
+                onClick={() => toggleSection(section.id)}
+                className={`w-full flex items-center justify-between px-4 py-3 hover:bg-gray-700/50 transition-all duration-200 rounded-lg group ${
+                  isActive ? 'bg-green-500/10 border border-green-500/30' : ''
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg transition-colors duration-200 ${
+                    isActive 
+                      ? 'bg-green-500/20 text-green-400' 
+                      : 'bg-gray-700/50 text-gray-400 group-hover:bg-gray-600/50 group-hover:text-white'
+                  }`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="text-left">
+                    <div className={`font-semibold ${isActive ? 'text-green-400' : 'text-white'}`}>
+                      {section.name}
+                    </div>
+                    <div className={`text-xs ${isActive ? 'text-green-300' : 'text-gray-500'}`}>
+                      {section.description}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {section.tables.length > 0 && (
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      isActive 
+                        ? 'bg-green-500/20 text-green-300' 
+                        : 'bg-gray-700 text-gray-400'
+                    }`}>
+                      {section.tables.length}
+                    </span>
+                  )}
+                  {section.tables.length > 0 && (
+                    isExpanded ? (
+                      <ChevronDown className={`h-4 w-4 ${isActive ? 'text-green-400' : 'text-gray-400'}`} />
+                    ) : (
+                      <ChevronRight className={`h-4 w-4 ${isActive ? 'text-green-400' : 'text-gray-400'}`} />
+                    )
+                  )}
+                </div>
+              </button>
+
+              {/* Tables List - Only show for Sources of Truth when expanded */}
+              {isExpanded && section.tables.length > 0 && (
+                <div className="mt-2 ml-4 space-y-1">
+                  {section.tables.map((table) => {
+                    const TableIcon = table.icon;
+                    const isSelected = selectedTable.id === table.id;
+                    
+                    return (
+                      <button
+                        key={table.id}
+                        onClick={() => onTableSelect(table)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                          isSelected
+                            ? 'bg-green-500/20 text-green-400 shadow-lg shadow-green-500/10 border border-green-500/30'
+                            : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3 min-w-0 flex-1">
+                          <div className={`p-2 rounded-lg transition-colors duration-200 ${
+                            isSelected 
+                              ? 'bg-green-500/30' 
+                              : 'bg-gray-700/50 group-hover:bg-gray-600/50'
+                          }`}>
+                            <TableIcon className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium truncate">{table.name}</div>
+                            <div className={`text-xs truncate ${
+                              isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
+                            }`}>
+                              {table.description}
+                            </div>
+                          </div>
+                        </div>
+                        <div className={`text-xs px-2 py-1 rounded-full ${
+                          isSelected 
+                            ? 'bg-green-500/20 text-green-300' 
+                            : 'bg-gray-700 text-gray-400 group-hover:bg-gray-600'
+                        }`}>
+                          {table.count.toLocaleString()}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Coming Soon for empty sections */}
+              {isExpanded && section.tables.length === 0 && (
+                <div className="mt-2 ml-4 px-4 py-3 text-center">
+                  <div className="text-gray-500 text-sm">Coming Soon</div>
+                </div>
               )}
             </div>
-          </button>
-
-          {/* Tables List */}
-          {isSourcesExpanded && (
-            <div className="space-y-1 ml-4">
-              {tables.map((table) => {
-                const Icon = table.icon;
-                const isSelected = selectedTable.id === table.id;
-                
-                return (
-                  <button
-                    key={table.id}
-                    onClick={() => onTableSelect(table)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
-                      isSelected
-                        ? 'bg-green-500/20 text-green-400 shadow-lg shadow-green-500/10'
-                        : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3 min-w-0 flex-1">
-                      <div className={`p-2 rounded-lg transition-colors duration-200 ${
-                        isSelected 
-                          ? 'bg-green-500/30' 
-                          : 'bg-gray-700/50 group-hover:bg-gray-600/50'
-                      }`}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-medium truncate">{table.name}</div>
-                        <div className={`text-xs truncate ${
-                          isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
-                        }`}>
-                          {table.description}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+          );
+        })}
       </nav>
 
       {/* Global Lineage Map at bottom */}
