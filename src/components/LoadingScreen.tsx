@@ -22,10 +22,10 @@ const LoadingScreen: React.FC<{ onLoadingComplete: () => void }> = ({ onLoadingC
       });
     }, 50);
 
-    // Change background image every 1 second
+    // Change background image every 3 seconds (slower transition)
     const imageInterval = setInterval(() => {
       setCurrentImage(prev => (prev + 1) % cannabisImages.length);
-    }, 1000);
+    }, 3000);
 
     return () => {
       clearInterval(interval);
