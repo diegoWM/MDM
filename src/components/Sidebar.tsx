@@ -81,11 +81,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className={`flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-600 to-green-600 rounded-lg`}>
-              <img 
-                src="/public/image.png" 
-                alt="WeedMe Logo" 
-                className="w-6 h-6 object-contain"
-              />
+              {/* Using a cannabis leaf icon from Lucide instead of broken image */}
+              <div className="text-white text-lg font-bold">🌿</div>
             </div>
             <h2 className={`text-lg font-semibold bg-gradient-to-r from-purple-400 to-green-400 bg-clip-text text-transparent`}>
               WeedMe MDM
