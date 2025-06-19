@@ -24,7 +24,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
-// Admin email addresses - only these can access the system
+// Admin email addresses - these can access production and approve changes
 const ADMIN_EMAILS = [
   'admin@weedme.com',
   'manager@weedme.com',
@@ -32,13 +32,25 @@ const ADMIN_EMAILS = [
   // Add more admin emails here
 ];
 
+// Authorized user emails - these can access the system and make changes
+const AUTHORIZED_EMAILS = [
+  ...ADMIN_EMAILS,
+  'user1@weedme.com',
+  'user2@weedme.com',
+  'analyst@weedme.com',
+  'coordinator@weedme.com',
+  // Add more user emails here
+];
+
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
+  isAuthorized: boolean;
   isLoading: boolean;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   canAccessProduction: boolean;
+  userRole: 'admin' | 'user' | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,7 +72,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const isAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false;
+  const isAuthorized = user ? AUTHORIZED_EMAILS.includes(user.email || '') : false;
   const canAccessProduction = isAdmin; // Only admins can access production
+  const userRole = user ? (isAdmin ? 'admin' : 'user') : null;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -76,10 +90,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const result = await signInWithPopup(auth, googleProvider);
       const userEmail = result.user.email;
       
-      // Check if user is admin
-      if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
+      // Check if user is authorized
+      if (!userEmail || !AUTHORIZED_EMAILS.includes(userEmail)) {
         await signOut(auth);
-        throw new Error('Access denied. Admin privileges required.');
+        throw new Error('Access denied. You are not authorized to access this system.');
       }
     } catch (error) {
       console.error('Sign in error:', error);
@@ -99,10 +113,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value = {
     user,
     isAdmin,
+    isAuthorized,
     isLoading,
     signInWithGoogle,
     logout,
-    canAccessProduction
+    canAccessProduction,
+    userRole
   };
 
   return (

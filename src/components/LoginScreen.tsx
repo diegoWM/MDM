@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, AlertTriangle, Chrome } from 'lucide-react';
+import { Shield, AlertTriangle, Chrome, Users } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginScreen: React.FC = () => {
@@ -45,14 +45,14 @@ const LoginScreen: React.FC = () => {
             <h1 className="text-3xl font-bold text-white mb-2">WeedMe MDM</h1>
             <p className="text-green-400 text-lg font-medium mb-4">Master Data Management</p>
             
-            {/* Admin Access Notice */}
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
-              <div className="flex items-center space-x-2 text-amber-400 mb-2">
-                <Shield className="h-5 w-5" />
-                <span className="font-semibold">Admin Access Required</span>
+            {/* Access Notice */}
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
+              <div className="flex items-center space-x-2 text-blue-400 mb-2">
+                <Users className="h-5 w-5" />
+                <span className="font-semibold">Authorized Access Required</span>
               </div>
-              <p className="text-amber-300 text-sm">
-                This system requires administrator privileges. Please sign in with your authorized Google account.
+              <p className="text-blue-300 text-sm">
+                Please sign in with your authorized Google account to access the system.
               </p>
             </div>
           </div>
@@ -90,7 +90,7 @@ const LoginScreen: React.FC = () => {
               Secure authentication powered by Google
             </p>
             <p className="text-gray-500 text-xs mt-1">
-              Only authorized administrators can access this system
+              Only authorized users can access this system
             </p>
           </div>
         </div>

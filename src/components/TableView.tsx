@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Eye, Edit, Trash2, MoreHorizontal, Filter, Users, AlertTriangle, Clock, Download, FileSpreadsheet, FileText } from 'lucide-react';
+import { Eye, Edit, Trash2, MoreHorizontal, Filter, Users, AlertTriangle, Clock, Download, FileSpreadsheet, FileText, CheckCircle, XCircle } from 'lucide-react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 import { exportToCSV, exportToExcel, getExportFilename } from '../utils/exportUtils';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Table {
   id: string;
@@ -61,6 +62,7 @@ const TableView: React.FC<TableViewProps> = ({
   selectedRows,
   onSelectedRowsChange
 }) => {
+  const { isAdmin } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showExportMenu, setShowExportMenu] = useState(false);
 
@@ -128,6 +130,15 @@ const TableView: React.FC<TableViewProps> = ({
     setShowExportMenu(false);
   };
 
+  const handleSubmitChanges = () => {
+    if (isAdmin) {
+      alert('Changes approved and will be pushed to production.');
+    } else {
+      alert('Changes submitted for admin review. You will be notified once approved.');
+    }
+    onSelectedRowsChange(new Set()); // Clear selection
+  };
+
   if (activeView !== 'data') {
     return (
       <div className="bg-gray-800/95 rounded-xl border border-gray-700 overflow-hidden shadow-xl backdrop-blur-sm">
@@ -177,8 +188,12 @@ const TableView: React.FC<TableViewProps> = ({
                 <h3 className="text-xl font-semibold text-white">
                   {table.name}
                 </h3>
-                <span className="bg-green-500/20 text-green-300 text-xs font-medium px-3 py-1 rounded-full border border-green-500/50">
-                  STAGING
+                <span className={`text-xs font-medium px-3 py-1 rounded-full border ${
+                  currentEnvironment === 'production'
+                    ? 'bg-red-500/20 text-red-300 border-red-500/50'
+                    : 'bg-green-500/20 text-green-300 border-green-500/50'
+                }`}>
+                  {currentEnvironment.toUpperCase()}
                 </span>
               </div>
               <p className="text-gray-400 text-sm">
@@ -278,12 +293,27 @@ const TableView: React.FC<TableViewProps> = ({
               {selectedRows.size} record{selectedRows.size > 1 ? 's' : ''} selected
             </span>
             <div className="flex items-center space-x-3">
-              <button className="px-4 py-2 bg-orange-500/80 hover:bg-orange-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm">
-                Propose Changes
+              <button 
+                onClick={handleSubmitChanges}
+                className="flex items-center space-x-2 px-4 py-2 bg-orange-500/80 hover:bg-orange-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm"
+              >
+                {isAdmin ? (
+                  <>
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Approve & Push</span>
+                  </>
+                ) : (
+                  <>
+                    <Clock className="h-4 w-4" />
+                    <span>Submit for Review</span>
+                  </>
+                )}
               </button>
-              <button className="px-4 py-2 bg-blue-500/80 hover:bg-blue-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm">
-                Request Review
-              </button>
+              {!isAdmin && (
+                <div className="text-xs text-gray-400">
+                  Changes will be reviewed by admin
+                </div>
+              )}
             </div>
           </div>
         )}

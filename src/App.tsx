@@ -41,7 +41,7 @@ const sampleTables = [
 ];
 
 const AppContent: React.FC = () => {
-  const { user, isAdmin, isLoading } = useAuth();
+  const { user, isAuthorized, isLoading } = useAuth();
   const [appLoading, setAppLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState(sampleTables[0]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,8 +80,8 @@ const AppContent: React.FC = () => {
     return <LoadingScreen onLoadingComplete={() => {}} />;
   }
 
-  // Show login screen if not authenticated or not admin
-  if (!user || !isAdmin) {
+  // Show login screen if not authenticated or not authorized
+  if (!user || !isAuthorized) {
     return <LoginScreen />;
   }
 

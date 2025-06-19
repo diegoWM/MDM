@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Settings, Bell, ChevronRight, ChevronDown, User, LogOut, Shield } from 'lucide-react';
+import { Search, Settings, Bell, ChevronRight, ChevronDown, User, LogOut, Shield, UserCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({
   sidebarCollapsed,
   onToggleSidebar
 }) => {
-  const { user, logout, canAccessProduction } = useAuth();
+  const { user, logout, canAccessProduction, isAdmin, userRole } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = async () => {
@@ -102,10 +102,10 @@ const Header: React.FC<HeaderProps> = ({
               <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-current pointer-events-none" />
             </div>
 
-            {/* Review Button */}
+            {/* Review Button - Different text based on role */}
             <button className="bg-orange-500/80 hover:bg-orange-500 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 font-medium backdrop-blur-sm">
               <Bell className="h-4 w-4" />
-              <span>Review</span>
+              <span>{isAdmin ? 'Review Changes' : 'Submit for Review'}</span>
             </button>
 
             {/* User Menu */}
@@ -131,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({
                   ) : (
                     <User className="h-4 w-4" />
                   )}
-                  <span className="text-sm font-medium">{user?.displayName || 'Admin'}</span>
+                  <span className="text-sm font-medium">{user?.displayName || userRole}</span>
                   <ChevronDown className="h-3 w-3" />
                 </button>
 
@@ -154,8 +154,17 @@ const Header: React.FC<HeaderProps> = ({
                           <div className="text-white font-medium">{user?.displayName}</div>
                           <div className="text-gray-400 text-sm">{user?.email}</div>
                           <div className="flex items-center space-x-1 mt-1">
-                            <Shield className="h-3 w-3 text-green-400" />
-                            <span className="text-green-400 text-xs font-medium">Administrator</span>
+                            {isAdmin ? (
+                              <>
+                                <Shield className="h-3 w-3 text-red-400" />
+                                <span className="text-red-400 text-xs font-medium">Administrator</span>
+                              </>
+                            ) : (
+                              <>
+                                <UserCheck className="h-3 w-3 text-blue-400" />
+                                <span className="text-blue-400 text-xs font-medium">User</span>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
