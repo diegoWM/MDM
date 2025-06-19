@@ -36,7 +36,6 @@ const Header: React.FC<HeaderProps> = ({
               <h1 className="text-xl font-semibold text-white">
                 Sources of Truth Management
               </h1>
-              <p className="text-sm text-gray-400 mt-0.5">Centralized master data governance platform</p>
             </div>
           </div>
           

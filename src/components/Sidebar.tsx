@@ -42,22 +42,19 @@ const Sidebar: React.FC<SidebarProps> = ({
       id: 'sources-of-truth',
       name: 'Sources of Truth',
       icon: Database,
-      tables: tables,
-      description: 'Master data repositories'
+      tables: tables
     },
     {
       id: 'quality-control',
       name: 'Quality Control',
       icon: ClipboardCheck,
-      tables: [],
-      description: 'Data quality and validation'
+      tables: []
     },
     {
       id: 'data-entry',
       name: 'Data Entry',
       icon: Edit3,
-      tables: [],
-      description: 'Data input and management'
+      tables: []
     }
   ];
 
@@ -216,11 +213,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="font-medium truncate">{table.name}</div>
-                            <div className={`text-xs truncate ${
-                              isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
-                            }`}>
-                              {table.description}
-                            </div>
                           </div>
                         </div>
                         <div className={`text-xs px-2 py-1 rounded-full ${

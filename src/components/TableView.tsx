@@ -183,7 +183,7 @@ const TableView: React.FC<TableViewProps> = ({
 
         {/* KPIs Section - Only show for Customer Master */}
         {table.id === 'customers' && table.activeCount && (
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-4 gap-4">
             <div className="bg-gray-600/30 rounded-lg p-4 border border-gray-600/50">
               <div className="text-2xl font-bold text-white">{table.count.toLocaleString()}</div>
               <div className="text-sm text-gray-400">Total Records</div>
@@ -191,6 +191,14 @@ const TableView: React.FC<TableViewProps> = ({
             <div className="bg-green-500/10 rounded-lg p-4 border border-green-500/30">
               <div className="text-2xl font-bold text-green-400">{table.activeCount.toLocaleString()}</div>
               <div className="text-sm text-green-300">Active Records</div>
+            </div>
+            <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
+              <div className="text-2xl font-bold text-blue-400">94.2%</div>
+              <div className="text-sm text-blue-300">Data Completeness</div>
+            </div>
+            <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
+              <div className="text-2xl font-bold text-purple-400">98.7%</div>
+              <div className="text-sm text-purple-300">Quality Score</div>
             </div>
           </div>
         )}
