@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, Edit, Trash2, MoreHorizontal, Grid, Users, AlertTriangle, Clock } from 'lucide-react';
-import { LucideIcon } from 'lucide-react';
+import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface Table {
   id: string;
