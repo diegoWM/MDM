@@ -7,6 +7,7 @@ interface Table {
   name: string;
   icon: LucideIcon;
   count: number;
+  activeCount?: number;
   description?: string;
 }
 
@@ -179,6 +180,20 @@ const TableView: React.FC<TableViewProps> = ({
             </div>
           </div>
         </div>
+
+        {/* KPIs Section - Only show for Customer Master */}
+        {table.id === 'customers' && table.activeCount && (
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <div className="bg-gray-600/30 rounded-lg p-4 border border-gray-600/50">
+              <div className="text-2xl font-bold text-white">{table.count.toLocaleString()}</div>
+              <div className="text-sm text-gray-400">Total Records</div>
+            </div>
+            <div className="bg-green-500/10 rounded-lg p-4 border border-green-500/30">
+              <div className="text-2xl font-bold text-green-400">{table.activeCount.toLocaleString()}</div>
+              <div className="text-sm text-green-300">Active Records</div>
+            </div>
+          </div>
+        )}
         
         {/* Bulk Actions */}
         {selectedRows.size > 0 && (
