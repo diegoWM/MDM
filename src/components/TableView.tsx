@@ -197,9 +197,11 @@ const TableView: React.FC<TableViewProps> = ({
                 </span>
               </div>
               <p className="text-gray-400 text-sm">
-                {filteredData.length.toLocaleString()} of {table.count.toLocaleString()} records
                 {searchQuery && (
-                  <span className="text-green-400 font-medium"> matching "{searchQuery}"</span>
+                  <span className="text-green-400 font-medium">Showing results for "{searchQuery}"</span>
+                )}
+                {!searchQuery && table.description && (
+                  <span>{table.description}</span>
                 )}
               </p>
             </div>
