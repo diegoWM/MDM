@@ -7,7 +7,6 @@ interface Table {
   name: string;
   icon: LucideIcon;
   count: number;
-  pendingCount: number;
   description?: string;
 }
 
@@ -75,11 +74,11 @@ const TableView: React.FC<TableViewProps> = ({
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      'Active': 'bg-green-100 text-green-700 border-green-200',
-      'Inactive': 'bg-red-100 text-red-700 border-red-200',
-      'Pending': 'bg-yellow-100 text-yellow-700 border-yellow-200'
+      'Active': 'bg-green-500/20 text-green-300 border-green-500/50',
+      'Inactive': 'bg-red-500/20 text-red-300 border-red-500/50',
+      'Pending': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/50'
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700 border-gray-200';
+    return colors[status as keyof typeof colors] || 'bg-gray-500/20 text-gray-300 border-gray-500/50';
   };
 
   const toggleRowSelection = (id: number) => {
@@ -102,17 +101,17 @@ const TableView: React.FC<TableViewProps> = ({
 
   if (activeView !== 'data') {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-        <div className="px-6 py-5 bg-gray-50 border-b border-gray-200">
+      <div className="bg-gray-800/95 rounded-xl border border-gray-700 overflow-hidden shadow-xl backdrop-blur-sm">
+        <div className="px-6 py-5 bg-gray-700/50 border-b border-gray-600">
           <div className="flex items-center space-x-4">
-            <div className="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-              <Icon className="h-6 w-6 text-gray-600" />
+            <div className="p-3 bg-gray-600/50 rounded-xl shadow-lg border border-gray-600">
+              <Icon className="h-6 w-6 text-gray-300" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-gray-900">
+              <h3 className="text-xl font-semibold text-white">
                 {table.name} {activeView === 'history' ? 'History' : 'Lineage'}
               </h3>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-400 text-sm">
                 {activeView === 'history' ? 'Change timeline and audit trail' : 'Data flow and dependencies'}
               </p>
             </div>
@@ -120,13 +119,13 @@ const TableView: React.FC<TableViewProps> = ({
         </div>
         <div className="p-12">
           <div className="text-center">
-            <div className="p-4 bg-gray-50 rounded-lg w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <div className="p-4 bg-gray-700/50 rounded-xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Icon className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-white mb-2">
               {activeView === 'history' ? 'History View' : 'Lineage View'}
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-400">
               This view is coming soon.
             </p>
           </div>
@@ -136,27 +135,27 @@ const TableView: React.FC<TableViewProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+    <div className="bg-gray-800/95 rounded-xl border border-gray-700 overflow-hidden shadow-xl backdrop-blur-sm">
       {/* Table Header */}
-      <div className="px-6 py-5 bg-gray-50 border-b border-gray-200">
+      <div className="px-6 py-5 bg-gray-700/50 border-b border-gray-600">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-              <Icon className="h-6 w-6 text-gray-600" />
+            <div className="p-3 bg-gray-600/50 rounded-xl shadow-lg border border-gray-600">
+              <Icon className="h-6 w-6 text-gray-300" />
             </div>
             <div>
               <div className="flex items-center space-x-3 mb-1">
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold text-white">
                   {table.name}
                 </h3>
-                <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-full border border-blue-200">
+                <span className="bg-green-500/20 text-green-300 text-xs font-medium px-3 py-1 rounded-full border border-green-500/50">
                   STAGING
                 </span>
               </div>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-400 text-sm">
                 {filteredData.length.toLocaleString()} of {table.count.toLocaleString()} records
                 {searchQuery && (
-                  <span className="text-blue-600 font-medium"> matching "{searchQuery}"</span>
+                  <span className="text-green-400 font-medium"> matching "{searchQuery}"</span>
                 )}
               </p>
             </div>
@@ -170,7 +169,7 @@ const TableView: React.FC<TableViewProps> = ({
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="pl-10 pr-8 py-2 bg-white text-gray-900 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm appearance-none"
+                className="pl-10 pr-8 py-2 bg-gray-700/50 text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none text-sm appearance-none backdrop-blur-sm"
               >
                 <option value="all">All Status</option>
                 <option value="Active">Active</option>
@@ -183,18 +182,18 @@ const TableView: React.FC<TableViewProps> = ({
         
         {/* Bulk Actions */}
         {selectedRows.size > 0 && (
-          <div className="mt-4 flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <span className="text-blue-900 font-medium">
+          <div className="mt-4 flex items-center justify-between p-4 bg-green-500/10 rounded-lg border border-green-500/30 backdrop-blur-sm">
+            <span className="text-green-300 font-medium">
               {selectedRows.size} record{selectedRows.size > 1 ? 's' : ''} selected
             </span>
             <div className="flex items-center space-x-3">
-              <button className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-all duration-200 font-medium">
+              <button className="px-4 py-2 bg-orange-500/80 hover:bg-orange-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm">
                 Propose Changes
               </button>
-              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-all duration-200 font-medium">
+              <button className="px-4 py-2 bg-blue-500/80 hover:bg-blue-500 text-white rounded-lg transition-all duration-200 font-medium backdrop-blur-sm">
                 Request Review
               </button>
-              <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-all duration-200 font-medium flex items-center space-x-2">
+              <button className="px-4 py-2 bg-green-500/80 hover:bg-green-500 text-white rounded-lg transition-all duration-200 font-medium flex items-center space-x-2 backdrop-blur-sm">
                 <Download className="h-4 w-4" />
                 <span>Export CSV</span>
               </button>
@@ -207,51 +206,51 @@ const TableView: React.FC<TableViewProps> = ({
       <div className="overflow-x-auto">
         {filteredData.length > 0 ? (
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-700/30 border-b border-gray-600">
               <tr>
                 <th className="px-6 py-3 text-left">
                   <input
                     type="checkbox"
                     checked={selectedRows.size === filteredData.length}
                     onChange={toggleAllRows}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
+                    className="rounded border-gray-500 text-green-500 focus:ring-green-500 bg-gray-700 w-4 h-4"
                   />
                 </th>
                 {getColumns().map((column) => (
                   <th
                     key={column}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                   >
                     {column.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                   </th>
                 ))}
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-gray-800/50 divide-y divide-gray-700">
               {filteredData.map((item: any, index: number) => (
-                <tr key={item.id || index} className="hover:bg-gray-50 transition-colors duration-150">
+                <tr key={item.id || index} className="hover:bg-gray-700/30 transition-colors duration-150">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <input
                       type="checkbox"
                       checked={selectedRows.has(item.id)}
                       onChange={() => toggleRowSelection(item.id)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
+                      className="rounded border-gray-500 text-green-500 focus:ring-green-500 bg-gray-700 w-4 h-4"
                     />
                   </td>
                   {getColumns().map((column) => (
-                    <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                       <div className="flex items-center space-x-2">
                         {item.hasIssues && column === getColumns()[0] && (
-                          <AlertTriangle className="h-4 w-4 text-yellow-500" title="Data quality issue detected" />
+                          <AlertTriangle className="h-4 w-4 text-yellow-400" title="Data quality issue detected" />
                         )}
                         {item.hasPendingChanges && column === getColumns()[0] && (
-                          <Clock className="h-4 w-4 text-orange-500" title="Pending changes awaiting approval" />
+                          <Clock className="h-4 w-4 text-orange-400" title="Pending changes awaiting approval" />
                         )}
                         {column === 'status' ? (
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusBadge(item[column])}`}>
+                          <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${getStatusBadge(item[column])}`}>
                             {item[column]}
                           </span>
                         ) : (
@@ -262,16 +261,16 @@ const TableView: React.FC<TableViewProps> = ({
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-1">
-                      <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 rounded-md" title="View details">
+                      <button className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all duration-200 rounded-lg" title="View details">
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 transition-all duration-200 rounded-md" title="Edit record">
+                      <button className="p-2 text-gray-400 hover:text-green-400 hover:bg-green-500/10 transition-all duration-200 rounded-lg" title="Edit record">
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200 rounded-md" title="Delete record">
+                      <button className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 rounded-lg" title="Delete record">
                         <Trash2 className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md" title="More actions">
+                      <button className="p-2 text-gray-400 hover:text-white hover:bg-gray-600/50 transition-all duration-200 rounded-lg" title="More actions">
                         <MoreHorizontal className="h-4 w-4" />
                       </button>
                     </div>
@@ -282,13 +281,13 @@ const TableView: React.FC<TableViewProps> = ({
           </table>
         ) : (
           <div className="text-center py-12">
-            <div className="p-4 bg-gray-50 rounded-lg w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <div className="p-4 bg-gray-700/50 rounded-xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Icon className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-white mb-2">
               No records found
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-400">
               {searchQuery ? `No records match "${searchQuery}"` : 'Get started by adding a new record.'}
             </p>
           </div>

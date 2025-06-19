@@ -6,7 +6,6 @@ interface HeaderProps {
   onSearchChange: (query: string) => void;
   currentEnvironment: 'staging' | 'production';
   onEnvironmentChange: (env: 'staging' | 'production') => void;
-  totalPendingCount: number;
   sidebarCollapsed: boolean;
   onToggleSidebar: () => void;
 }
@@ -16,28 +15,27 @@ const Header: React.FC<HeaderProps> = ({
   onSearchChange,
   currentEnvironment,
   onEnvironmentChange,
-  totalPendingCount,
   sidebarCollapsed,
   onToggleSidebar
 }) => {
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-gray-800/95 shadow-xl border-b border-gray-700 backdrop-blur-sm">
       <div className="px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             {/* Sidebar Toggle */}
             <button
               onClick={onToggleSidebar}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md"
+              className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200 rounded-lg"
             >
               <Menu className="h-5 w-5" />
             </button>
             
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-white">
                 Sources of Truth Management
               </h1>
-              <p className="text-sm text-gray-500 mt-0.5">Centralized master data governance platform</p>
+              <p className="text-sm text-gray-400 mt-0.5">Centralized master data governance platform</p>
             </div>
           </div>
           
@@ -50,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({
                 placeholder="Search records..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-80 transition-all duration-200"
+                className="pl-10 pr-4 py-2 bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none w-80 transition-all duration-200 backdrop-blur-sm"
               />
             </div>
 
@@ -59,10 +57,10 @@ const Header: React.FC<HeaderProps> = ({
               <select
                 value={currentEnvironment}
                 onChange={(e) => onEnvironmentChange(e.target.value as 'staging' | 'production')}
-                className={`appearance-none px-3 py-2 pr-8 rounded-md font-medium text-sm border transition-all duration-200 min-w-[120px] ${
+                className={`appearance-none px-4 py-2 pr-8 rounded-lg font-medium text-sm border transition-all duration-200 min-w-[120px] backdrop-blur-sm ${
                   currentEnvironment === 'production'
-                    ? 'bg-red-50 hover:bg-red-100 text-red-700 border-red-200'
-                    : 'bg-green-50 hover:bg-green-100 text-green-700 border-green-200'
+                    ? 'bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-500/50'
+                    : 'bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-500/50'
                 }`}
               >
                 <option value="staging">Staging</option>
@@ -72,29 +70,24 @@ const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Review Button */}
-            {totalPendingCount > 0 && (
-              <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-all duration-200 flex items-center space-x-2 font-medium">
-                <Bell className="h-4 w-4" />
-                <span>Review</span>
-                <span className="bg-orange-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                  {totalPendingCount}
-                </span>
-              </button>
-            )}
+            <button className="bg-orange-500/80 hover:bg-orange-500 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 font-medium backdrop-blur-sm">
+              <Bell className="h-4 w-4" />
+              <span>Review</span>
+            </button>
 
             {/* User Menu */}
             <div className="flex items-center space-x-3">
-              <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-700 transition-all duration-200">
+              <button className="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 hover:text-white transition-all duration-200 backdrop-blur-sm">
                 Switch to User
               </button>
               
-              <div className="h-5 w-px bg-gray-300"></div>
+              <div className="h-5 w-px bg-gray-600"></div>
               
-              <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md">
+              <button className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200 rounded-lg">
                 <Settings className="h-4 w-4" />
               </button>
               
-              <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 rounded-md">
+              <button className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200 rounded-lg">
                 <User className="h-4 w-4" />
               </button>
             </div>
