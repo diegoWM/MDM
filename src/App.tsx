@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Users, Package, Building, BarChart3 } from 'lucide-react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import LoginScreen from './components/LoginScreen';
 import Sidebar from './components/Sidebar';
 import TableView from './components/TableView';
 import Header from './components/Header';
 import LoadingScreen from './components/LoadingScreen';
+import ProductionWarning from './components/ProductionWarning';
 
 const sampleTables = [
   { 
@@ -37,26 +40,63 @@ const sampleTables = [
   }
 ];
 
-function App() {
-  const [isLoading, setIsLoading] = useState(true);
+const AppContent: React.FC = () => {
+  const { user, isAdmin, isLoading } = useAuth();
+  const [appLoading, setAppLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState(sampleTables[0]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentEnvironment, setCurrentEnvironment] = useState<'staging' | 'production'>('staging');
   const [activeView, setActiveView] = useState<'data' | 'history' | 'lineage'>('data');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [showProductionWarning, setShowProductionWarning] = useState(false);
+  const [pendingEnvironment, setPendingEnvironment] = useState<'staging' | 'production'>('staging');
 
   const handleLoadingComplete = () => {
-    setIsLoading(false);
+    setAppLoading(false);
   };
 
+  const handleEnvironmentChange = (env: 'staging' | 'production') => {
+    if (env === 'production' && currentEnvironment !== 'production') {
+      setPendingEnvironment(env);
+      setShowProductionWarning(true);
+    } else {
+      setCurrentEnvironment(env);
+    }
+  };
+
+  const handleProductionConfirm = () => {
+    setCurrentEnvironment(pendingEnvironment);
+    setShowProductionWarning(false);
+  };
+
+  const handleProductionCancel = () => {
+    setShowProductionWarning(false);
+    setPendingEnvironment('staging');
+  };
+
+  // Show loading screen while auth is loading
   if (isLoading) {
+    return <LoadingScreen onLoadingComplete={() => {}} />;
+  }
+
+  // Show login screen if not authenticated or not admin
+  if (!user || !isAdmin) {
+    return <LoginScreen />;
+  }
+
+  // Show app loading screen
+  if (appLoading) {
     return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
   }
 
   return (
     <div 
-      className="min-h-screen bg-gray-900 flex relative"
+      className={`min-h-screen flex relative transition-all duration-500 ${
+        currentEnvironment === 'production'
+          ? 'bg-red-900/20'
+          : 'bg-gray-900'
+      }`}
       style={{
         backgroundImage: `url('https://images.pexels.com/photos/1466335/pexels-photo-1466335.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')`,
         backgroundSize: 'cover',
@@ -65,8 +105,20 @@ function App() {
         backgroundAttachment: 'fixed'
       }}
     >
-      {/* Dark overlay for better readability */}
-      <div className="absolute inset-0 bg-gray-900/85 backdrop-blur-sm"></div>
+      {/* Dynamic overlay based on environment */}
+      <div className={`absolute inset-0 backdrop-blur-sm transition-all duration-500 ${
+        currentEnvironment === 'production'
+          ? 'bg-red-900/85 animate-pulse'
+          : 'bg-gray-900/85'
+      }`}></div>
+      
+      {/* Production Warning Modal */}
+      {showProductionWarning && (
+        <ProductionWarning
+          onConfirm={handleProductionConfirm}
+          onCancel={handleProductionCancel}
+        />
+      )}
       
       {/* Content with relative positioning */}
       <div className="relative z-10 flex w-full">
@@ -86,13 +138,17 @@ function App() {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             currentEnvironment={currentEnvironment}
-            onEnvironmentChange={setCurrentEnvironment}
+            onEnvironmentChange={handleEnvironmentChange}
             sidebarCollapsed={sidebarCollapsed}
             onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
 
           {/* View Tabs */}
-          <div className="bg-gray-800/90 border-b border-gray-700 px-8 backdrop-blur-sm">
+          <div className={`border-b backdrop-blur-sm transition-all duration-300 ${
+            currentEnvironment === 'production'
+              ? 'bg-red-800/90 border-red-700'
+              : 'bg-gray-800/90 border-gray-700'
+          } px-8`}>
             <div className="flex space-x-8">
               {[
                 { id: 'data', label: 'Data', icon: BarChart3 },
@@ -106,7 +162,9 @@ function App() {
                     onClick={() => setActiveView(tab.id as any)}
                     className={`flex items-center space-x-2 px-1 py-4 text-sm font-medium transition-all duration-300 border-b-2 relative ${
                       activeView === tab.id
-                        ? 'text-green-400 border-green-400'
+                        ? currentEnvironment === 'production'
+                          ? 'text-red-400 border-red-400'
+                          : 'text-green-400 border-green-400'
                         : 'text-gray-400 border-transparent hover:text-gray-300 hover:border-gray-600'
                     }`}
                   >
@@ -132,6 +190,14 @@ function App() {
         </div>
       </div>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
