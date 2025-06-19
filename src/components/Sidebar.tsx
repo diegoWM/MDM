@@ -7,6 +7,7 @@ interface Table {
   name: string;
   icon: LucideIcon;
   count: number;
+  activeCount?: number;
   description?: string;
 }
 
@@ -166,9 +167,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <div className={`font-semibold ${isActive ? 'text-green-400' : 'text-white'}`}>
                       {section.name}
                     </div>
-                    <div className={`text-xs ${isActive ? 'text-green-300' : 'text-gray-500'}`}>
-                      {section.description}
-                    </div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -218,20 +216,39 @@ const Sidebar: React.FC<SidebarProps> = ({
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="font-medium truncate">{table.name}</div>
-                            <div className={`text-xs truncate ${
-                              isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
-                            }`}>
-                              {table.description}
-                            </div>
+                            {/* Show KPIs for Customer Master, otherwise show description */}
+                            {table.id === 'customers' && table.activeCount ? (
+                              <div className="flex items-center space-x-3 mt-1">
+                                <div className={`text-xs ${
+                                  isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
+                                }`}>
+                                  Total: {table.count.toLocaleString()}
+                                </div>
+                                <div className={`text-xs ${
+                                  isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
+                                }`}>
+                                  Active: {table.activeCount.toLocaleString()}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className={`text-xs truncate ${
+                                isSelected ? 'text-green-300' : 'text-gray-500 group-hover:text-gray-400'
+                              }`}>
+                                {table.description}
+                              </div>
+                            )}
                           </div>
                         </div>
-                        <div className={`text-xs px-2 py-1 rounded-full ${
-                          isSelected 
-                            ? 'bg-green-500/20 text-green-300' 
-                            : 'bg-gray-700 text-gray-400 group-hover:bg-gray-600'
-                        }`}>
-                          {table.count.toLocaleString()}
-                        </div>
+                        {/* Only show total count badge for non-customer tables */}
+                        {table.id !== 'customers' && (
+                          <div className={`text-xs px-2 py-1 rounded-full ${
+                            isSelected 
+                              ? 'bg-green-500/20 text-green-300' 
+                              : 'bg-gray-700 text-gray-400 group-hover:bg-gray-600'
+                          }`}>
+                            {table.count.toLocaleString()}
+                          </div>
+                        )}
                       </button>
                     );
                   })}

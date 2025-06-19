@@ -11,6 +11,7 @@ const sampleTables = [
     name: 'Customer Master', 
     icon: Users, 
     count: 1247,
+    activeCount: 892,
     description: 'Customer records and information'
   },
   { 
