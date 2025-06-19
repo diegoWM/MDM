@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Settings, Bell, Menu, ChevronDown, User } from 'lucide-react';
+import { Search, Settings, Bell, ChevronRight, ChevronDown, User } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery: string;
@@ -27,8 +27,9 @@ const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onToggleSidebar}
               className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200 rounded-lg"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <Menu className="h-5 w-5" />
+              <ChevronRight className={`h-5 w-5 transition-transform duration-200 ${sidebarCollapsed ? '' : 'rotate-180'}`} />
             </button>
             
             <div>

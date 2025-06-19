@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Database, Menu, X, GitBranch } from 'lucide-react';
+import { ChevronDown, ChevronRight, Database, ChevronLeft, GitBranch } from 'lucide-react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface Table {
@@ -34,8 +34,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onToggleCollapse}
             className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200 rounded-lg w-full"
+            title="Expand sidebar"
           >
-            <Menu className="h-5 w-5" />
+            <ChevronRight className="h-5 w-5" />
           </button>
         </div>
         
@@ -89,8 +90,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onToggleCollapse}
             className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200 rounded-lg"
+            title="Collapse sidebar"
           >
-            <X className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
         </div>
       </div>
