@@ -42,6 +42,9 @@ const AUTHORIZED_EMAILS = [
   // Add more user emails here
 ];
 
+// TEMPORARY: Disable authentication for review
+const DISABLE_AUTH = true;
+
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
@@ -69,14 +72,28 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!DISABLE_AUTH);
 
-  const isAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false;
-  const isAuthorized = user ? AUTHORIZED_EMAILS.includes(user.email || '') : false;
+  // When auth is disabled, create a mock admin user
+  const mockUser = DISABLE_AUTH ? {
+    uid: 'mock-admin-uid',
+    email: 'admin@weedme.com',
+    displayName: 'Demo Admin',
+    photoURL: null
+  } as User : null;
+
+  const currentUser = DISABLE_AUTH ? mockUser : user;
+  const isAdmin = currentUser ? ADMIN_EMAILS.includes(currentUser.email || '') : false;
+  const isAuthorized = DISABLE_AUTH ? true : (currentUser ? AUTHORIZED_EMAILS.includes(currentUser.email || '') : false);
   const canAccessProduction = isAdmin; // Only admins can access production
-  const userRole = user ? (isAdmin ? 'admin' : 'user') : null;
+  const userRole = currentUser ? (isAdmin ? 'admin' : 'user') : null;
 
   useEffect(() => {
+    if (DISABLE_AUTH) {
+      setIsLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsLoading(false);
@@ -86,6 +103,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signInWithGoogle = async () => {
+    if (DISABLE_AUTH) {
+      return; // Skip authentication when disabled
+    }
+
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const userEmail = result.user.email;
@@ -102,6 +123,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = async () => {
+    if (DISABLE_AUTH) {
+      return; // Skip logout when disabled
+    }
+
     try {
       await signOut(auth);
     } catch (error) {
@@ -111,7 +136,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const value = {
-    user,
+    user: currentUser,
     isAdmin,
     isAuthorized,
     isLoading,
