@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Database, Users, Package, Building, BarChart3 } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import TableView from './components/TableView';
 import Header from './components/Header';
+import LoadingScreen from './components/LoadingScreen';
 
 const sampleTables = [
   { 
@@ -36,12 +37,21 @@ const sampleTables = [
 ];
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedTable, setSelectedTable] = useState(sampleTables[0]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentEnvironment, setCurrentEnvironment] = useState<'staging' | 'production'>('staging');
   const [activeView, setActiveView] = useState<'data' | 'history' | 'lineage'>('data');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
+  }
 
   return (
     <div 

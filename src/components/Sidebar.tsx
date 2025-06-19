@@ -60,6 +60,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </nav>
+
+        {/* Global Lineage Map at bottom - collapsed */}
+        <div className="p-3 border-t border-gray-700">
+          <button className="w-full p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700/50 transition-all duration-200" title="Global Lineage Map">
+            <GitBranch className="h-5 w-5 mx-auto" />
+          </button>
+        </div>
       </div>
     );
   }
@@ -89,16 +96,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       
       <nav className="flex-1 p-6 overflow-y-auto space-y-6">
-        {/* Global Lineage Map */}
-        <div>
-          <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200 rounded-lg group">
-            <div className="p-2 bg-gray-700/50 group-hover:bg-gray-600/50 rounded-lg transition-colors duration-200">
-              <GitBranch className="h-4 w-4 text-gray-400 group-hover:text-white" />
-            </div>
-            <span className="font-medium">Global Lineage Map</span>
-          </button>
-        </div>
-
         {/* Sources of Truth Section */}
         <div>
           <button
@@ -161,6 +158,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
       </nav>
+
+      {/* Global Lineage Map at bottom */}
+      <div className="p-6 border-t border-gray-700">
+        <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200 rounded-lg group">
+          <div className="p-2 bg-gray-700/50 group-hover:bg-gray-600/50 rounded-lg transition-colors duration-200">
+            <GitBranch className="h-4 w-4 text-gray-400 group-hover:text-white" />
+          </div>
+          <span className="font-medium">Global Lineage Map</span>
+        </button>
+      </div>
     </div>
   );
 };
